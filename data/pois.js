@@ -1,6 +1,21 @@
 // Points of interest along the float route Thun–Bern, in downstream order.
 // Coordinates verified against OpenStreetMap (official slipways, bridges, weir).
+//
+// Optional fields:
+//   url     – external website, shown as a button in the popup
+//   minZoom – marker only appears from this zoom level (prevents overlapping icons)
+//   A photo/logo appears in the popup automatically if img/<id>.jpg exists.
 const POIS = [
+  {
+    id: 'vermietung-schwaebis',
+    type: 'rental',
+    lat: 46.76236, lon: 7.61862,
+    minZoom: 13,
+    name: 'Aarebootsvermietung',
+    url: 'https://aarebootsvermietung.ch',
+    de: 'Schlauchboot-Vermietung direkt an der Regibrücke (Schwäbisstrasse 58, Steffisburg). Boote, Schwimmwesten und Trockensäcke – Einwasserung gleich unterhalb.',
+    en: 'Inflatable boat rental right at the Regibrücke bridge. Boats, life jackets and dry bags – launch just downstream.'
+  },
   {
     id: 'schwaebis',
     type: 'entry',
@@ -8,6 +23,16 @@ const POIS = [
     name: 'Einstieg Schwäbis',
     de: 'Offizielle Einwasserungsstelle. Hier starten die meisten Böötler ab Thun. Rettungsweste anziehen, Nutzlast des Boots beachten.',
     en: 'Official boat entry point. Most floats from Thun start here. Wear your life jacket.'
+  },
+  {
+    id: 'vermietung-uttigen',
+    type: 'rental',
+    lat: 46.79429, lon: 7.58257,
+    minZoom: 13,
+    name: 'Aareschlauchboot',
+    url: 'https://aareschlauchboot.ch',
+    de: 'Schlauchboot-, SUP- und Kajak-Vermietung direkt am Bahnhof Uttigen. Einwasserung unterhalb der SBB-Brücke – so wird die Uttigenwelle umgangen.',
+    en: 'Boat, SUP and kayak rental at Uttigen train station. Launch below the railway bridge, avoiding the Uttigen wave.'
   },
   {
     id: 'uttigenwelle',
@@ -21,6 +46,7 @@ const POIS = [
     id: 'uttigen',
     type: 'entry',
     lat: 46.79756, lon: 7.58089,
+    minZoom: 13,
     name: 'Einstieg Uttigen',
     de: 'Offizielle Einwasserungsstelle direkt unterhalb der Eisenbahnbrücke – wer hier startet, umgeht die Uttigenwelle.',
     en: 'Official entry point just below the railway bridge – starting here avoids the Uttigen wave.'
@@ -37,6 +63,7 @@ const POIS = [
     id: 'eichholz',
     type: 'exit',
     lat: 46.93307, lon: 7.45328,
+    minZoom: 12,
     name: 'Ausstieg Eichholz',
     de: 'Erster Hauptausstieg in Bern (rechtes Ufer). Grosse Wiese, Camping, Duschen, WC, Tram Nr. 9 (Haltestelle Eichholz). Guter Ausstieg für Schlauchboote.',
     en: 'First main exit in Bern (right bank). Large meadow, camping, showers, tram no. 9. Good take-out for boats.'

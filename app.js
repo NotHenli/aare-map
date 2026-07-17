@@ -1,62 +1,135 @@
 /* Aare float map Thun → Bern */
 
-// --- Base map: official swisstopo tiles (free, no API key) ---
-const swisstopoColor = L.tileLayer(
-  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg',
-  { maxZoom: 18, attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a> · Fluss: © <a href="https://www.openstreetmap.org/copyright">OSM</a> · Live: <a href="https://aare.guru">aare.guru</a>' }
-);
-const swissimage = L.tileLayer(
+// --- Base map: swisstopo aerial imagery (free, no API key) ---
+const map = L.map('map', { zoomControl: false, attributionControl: false, maxBoundsViscosity: 1.0 });
+
+L.tileLayer(
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
-  { maxZoom: 19, attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a>' }
-);
+  {
+    maxZoom: 19,
+    attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a> · Fluss: © <a href="https://www.openstreetmap.org/copyright">OSM</a> · Live: <a href="https://aare.guru">aare.guru</a>'
+  }
+).addTo(map);
 
-const map = L.map('map', { layers: [swisstopoColor], zoomControl: false });
-L.control.zoom({ position: 'topright' }).addTo(map);
-L.control.layers({ 'Karte': swisstopoColor, 'Luftbild': swissimage }, null, { position: 'topright' }).addTo(map);
+L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+L.control.zoom({ position: 'bottomright' }).addTo(map); // hidden on touch layouts via CSS
 
-// --- River line (white casing + blue line for visibility on any base map) ---
-const casing = L.geoJSON(RIVER_GEOJSON, { style: { color: '#ffffff', weight: 9, opacity: 0.8 } }).addTo(map);
-const riverLine = L.geoJSON(RIVER_GEOJSON, { style: { color: '#2f8fbf', weight: 5, opacity: 0.95 } }).addTo(map);
-map.fitBounds(riverLine.getBounds().pad(0.02));
+// --- River line, trimmed to the trip: Einstieg Schwäbis → Wehr Schwellenmätteli ---
+const TRIP_START = POIS.find(p => p.id === 'schwaebis');
+const TRIP_END = POIS.find(p => p.id === 'schwelle');
+
+function nearestIdx(coords, lat, lon) {
+  let best = 0, bestD = Infinity;
+  coords.forEach((c, i) => {
+    const d = (c[1] - lat) ** 2 + (c[0] - lon) ** 2;
+    if (d < bestD) { bestD = d; best = i; }
+  });
+  return best;
+}
+
+// Longest feature is the main channel; short features are side channels kept as-is.
+const riverFeats = RIVER_GEOJSON.features.slice()
+  .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
+const mainCoords = riverFeats[0].geometry.coordinates;
+const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
+const iEnd = nearestIdx(mainCoords, TRIP_END.lat, TRIP_END.lon);
+const RIVER_TRIMMED = {
+  type: 'FeatureCollection',
+  features: [
+    { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: mainCoords.slice(Math.min(iStart, iEnd), Math.max(iStart, iEnd) + 1) } },
+    ...riverFeats.slice(1)
+  ]
+};
+
+L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
+const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#3ec1ff', weight: 4.5, opacity: 0.95 } }).addTo(map);
+
+// --- Restrict view to the relevant area: no panning away, no zooming out past the route ---
+const routeBounds = riverLine.getBounds();
+map.fitBounds(routeBounds.pad(0.02));
+map.setMaxBounds(routeBounds.pad(0.4));
+map.setMinZoom(map.getBoundsZoom(routeBounds.pad(0.05)));
 
 // --- POI markers ---
-const ICONS = { entry: '🛶', danger: '⚠️', exit: '🏁', weir: '⛔' };
+const ICONS = { entry: '🛶', danger: '⚠️', exit: '🏁', weir: '⛔', rental: '🚤' };
+
+function popupHtml(p) {
+  return (
+    `<div class="popup-title ${p.type}">${ICONS[p.type]} ${p.name}</div>` +
+    `<img class="popup-img" src="img/${p.id}.jpg" alt="" onerror="this.remove()">` +
+    `<div>${p.de}</div>` +
+    `<div class="popup-en">${p.en}</div>` +
+    (p.url ? `<a class="popup-link" href="${p.url}" target="_blank" rel="noopener">Website öffnen ↗</a>` : '')
+  );
+}
 
 const markers = {};
 POIS.forEach(p => {
-  const size = (p.type === 'danger' || p.type === 'weir') ? 34 : 30;
+  const size = (p.type === 'danger' || p.type === 'weir') ? 36 : 32;
   const icon = L.divIcon({
     className: '',
     html: `<div class="poi-icon ${p.type}" style="width:${size}px;height:${size}px">${ICONS[p.type]}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2]
   });
-  const m = L.marker([p.lat, p.lon], { icon, title: p.name }).addTo(map);
-  m.bindPopup(
-    `<div class="popup-title ${p.type}">${ICONS[p.type]} ${p.name}</div>` +
-    `<div>${p.de}</div>` +
-    `<div class="popup-en">${p.en}</div>`,
-    { maxWidth: 260 }
-  );
+  const m = L.marker([p.lat, p.lon], { icon, title: p.name });
+  m.bindPopup(popupHtml(p), { maxWidth: 280 });
   markers[p.id] = m;
 });
 
-// --- POI list panel ---
+// Markers with a minZoom only appear when zoomed in, so nearby icons never overlap.
+function updateMarkerVisibility() {
+  const z = map.getZoom();
+  POIS.forEach(p => {
+    const m = markers[p.id];
+    const show = !p.minZoom || z >= p.minZoom;
+    if (show && !map.hasLayer(m)) m.addTo(map);
+    else if (!show && map.hasLayer(m)) m.remove();
+  });
+}
+map.on('zoomend', updateMarkerVisibility);
+updateMarkerVisibility();
+
+// --- Bottom sheet with POI list ---
 const panel = document.getElementById('poi-panel');
+const backdrop = document.getElementById('sheet-backdrop');
 const list = document.getElementById('poi-list');
+
+function openSheet() { panel.classList.remove('hidden'); backdrop.classList.remove('hidden'); }
+function closeSheet() { panel.classList.add('hidden'); backdrop.classList.add('hidden'); }
+
 POIS.forEach(p => {
   const li = document.createElement('li');
-  li.innerHTML = `<i class="dot ${p.type}"></i> ${p.name}`;
+  li.innerHTML =
+    `<span class="li-icon ${p.type}">${ICONS[p.type]}</span>` +
+    `<span class="li-name">${p.name}</span>` +
+    `<svg class="li-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`;
   li.addEventListener('click', () => {
-    panel.classList.add('hidden');
+    closeSheet();
+    markers[p.id].addTo(map); // ensure visible even before the flyTo zoom kicks in
     map.flyTo([p.lat, p.lon], 16, { duration: 0.8 });
     markers[p.id].openPopup();
   });
   list.appendChild(li);
 });
-document.getElementById('list-btn').addEventListener('click', () => panel.classList.toggle('hidden'));
 
-// --- Geolocation: live position dot ---
+document.getElementById('list-btn').addEventListener('click', () =>
+  panel.classList.contains('hidden') ? openSheet() : closeSheet()
+);
+backdrop.addEventListener('click', closeSheet);
+document.getElementById('sheet-handle').addEventListener('click', closeSheet);
+
+// --- Toast ---
+const toastEl = document.getElementById('toast');
+let toastTimer;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 4000);
+}
+
+// --- Geolocation: live position dot (browser asks for permission on first tap) ---
 let userMarker = null, accCircle = null, watching = false, firstFix = true;
 const locateBtn = document.getElementById('locate-btn');
 
@@ -77,10 +150,15 @@ locateBtn.addEventListener('click', () => {
 map.on('locationfound', e => {
   if (!userMarker) {
     userMarker = L.marker(e.latlng, {
-      icon: L.divIcon({ className: '', html: '<div class="user-dot" style="width:18px;height:18px"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }),
+      icon: L.divIcon({
+        className: '',
+        html: '<div class="user-dot-wrap"><div class="user-pulse"></div><div class="user-dot"></div></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      }),
       zIndexOffset: 1000
     }).addTo(map);
-    accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#1668c7', fillOpacity: 0.08 }).addTo(map);
+    accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#2e7cf6', fillColor: '#2e7cf6', fillOpacity: 0.08 }).addTo(map);
   } else {
     userMarker.setLatLng(e.latlng);
     accCircle.setLatLng(e.latlng).setRadius(e.accuracy);
@@ -91,20 +169,42 @@ map.on('locationfound', e => {
 map.on('locationerror', () => {
   watching = false; firstFix = true;
   locateBtn.classList.remove('active');
-  alert('Standort nicht verfügbar. Bitte GPS/Standortfreigabe aktivieren.');
+  toast('Standort nicht verfügbar – bitte Standortfreigabe im Browser erlauben.');
 });
 
-// --- Live water temperature & flow from aare.guru (free API, attribution required) ---
-fetch('https://aareguru.existenz.ch/v2018/current?city=bern&app=aare-float-map&version=0.1')
-  .then(r => r.json())
-  .then(d => {
-    const a = d.aare || {};
-    if (a.temperature != null) document.getElementById('aare-temp').textContent = `🌡 ${a.temperature} °C`;
-    if (a.flow != null) {
-      const el = document.getElementById('aare-flow');
-      el.textContent = `🌊 ${a.flow} m³/s`;
-      // City of Bern advises caution for boaters above ~220 m³/s
-      if (a.flow >= 220) { el.style.background = '#fde3e3'; el.style.color = '#a01212'; el.textContent += ' ⚠️'; }
-    }
-  })
-  .catch(() => { /* live data is optional; map works without it */ });
+// --- Live data from aare.guru: temperature, flow Thun & Bern, float time estimate ---
+// Rule of thumb for Thun→Bern (based on flow at Thun):
+//   < 100 m³/s ≈ 4 h · 100–120 ≈ 3½ h · 120–160 ≈ 3 h · ≥ 160 ≈ 2½–3 h
+function floatTime(flow) {
+  if (flow == null) return null;
+  if (flow >= 160) return '2½–3 h';
+  if (flow >= 120) return '≈ 3 h';
+  if (flow >= 100) return '≈ 3½ h';
+  return '≈ 4 h';
+}
+
+function setStat(id, text, warn) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  if (warn) el.parentElement.classList.add('warn');
+}
+
+const aareGuru = city =>
+  fetch(`https://aareguru.existenz.ch/v2018/current?city=${city}&app=aare-float-map&version=0.3`)
+    .then(r => r.json());
+
+Promise.allSettled([aareGuru('thun'), aareGuru('bern')]).then(([thun, bern]) => {
+  const t = thun.status === 'fulfilled' ? (thun.value.aare || {}) : {};
+  const b = bern.status === 'fulfilled' ? (bern.value.aare || {}) : {};
+
+  if (b.temperature != null) setStat('stat-temp', `${b.temperature} °C`);
+  if (t.flow != null) setStat('stat-flow-thun', `${t.flow} m³/s`);
+  // City of Bern advises caution for boaters above ~220 m³/s
+  if (b.flow != null) setStat('stat-flow-bern', `${b.flow} m³/s`, b.flow >= 220);
+
+  const time = floatTime(t.flow != null ? t.flow : b.flow);
+  if (time) setStat('stat-time', time);
+  if (b.flow != null && b.flow >= 220) {
+    toast('⚠️ Hoher Abfluss (' + b.flow + ' m³/s in Bern) – Bootsfahrt nur für Geübte!');
+  }
+}).catch(() => { /* live data is optional; map works without it */ });

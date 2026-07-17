@@ -2,7 +2,9 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b1d2a">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%B6%3C/text%3E%3C/svg%3E">
   <title>Aare Böötle – Thun → Bern | Sicherheitskarte</title>
   <meta name="description" content="Interaktive Karte für die Aare-Bootsfahrt von Thun nach Bern: Einstiege, Gefahrenstellen und Ausstiege, mit Live-Standort und Wassertemperatur.">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -10,23 +12,41 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="map"></div>
+
   <header id="topbar">
     <div id="title">
-      <h1>Aare Böötle <span>Thun → Bern</span></h1>
+      <h1>Aare Böötle</h1>
+      <p>Thun → Bern</p>
     </div>
     <div id="aare-live" title="Live-Daten: aare.guru">
-      <span id="aare-temp">–</span>
-      <span id="aare-flow">–</span>
+      <span id="aare-temp" class="chip hidden"></span>
+      <span id="aare-flow" class="chip hidden"></span>
     </div>
   </header>
 
-  <div id="map"></div>
+  <button id="locate-btn" aria-label="Meinen Standort anzeigen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="3.2"/>
+      <path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22"/>
+      <circle cx="12" cy="12" r="7.5"/>
+    </svg>
+  </button>
 
-  <button id="locate-btn" title="Meinen Standort anzeigen">📍</button>
-  <button id="list-btn" title="Streckenpunkte">☰ Strecke</button>
+  <button id="list-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 3v12a3 3 0 0 0 3 3h9"/>
+      <circle cx="6" cy="3" r="0.5" fill="currentColor"/>
+      <path d="M15 15l3 3-3 3"/>
+    </svg>
+    Strecke
+  </button>
 
-  <nav id="poi-panel" class="hidden">
-    <h2>Streckenpunkte flussabwärts</h2>
+  <div id="sheet-backdrop" class="hidden"></div>
+
+  <nav id="poi-panel" class="hidden" aria-label="Streckenpunkte">
+    <div id="sheet-handle"></div>
+    <h2>Strecke flussabwärts</h2>
     <ul id="poi-list"></ul>
     <div id="legend">
       <span><i class="dot entry"></i> Einstieg</span>
@@ -36,9 +56,10 @@
     </div>
   </nav>
 
+  <div id="toast" role="status"></div>
+
   <footer id="disclaimer">
-    Keine Gewähr – ersetzt nicht die offizielle SLRG-Aarekarte (<a href="https://www.slrg.ch" target="_blank" rel="noopener">slrg.ch</a>).
-    Notfall: <strong>112</strong> · Boot verloren? Polizei melden.
+    Keine Gewähr – offizielle <a href="https://www.slrg.ch" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Notfall <strong>112</strong>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

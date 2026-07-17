@@ -4,17 +4,20 @@ Interaktive Sicherheitskarte für die Aare-Bootsfahrt von Thun nach Bern.
 Zeigt Einstiege, Gefahrenstellen, Ausstiege, den Live-Standort und die
 aktuelle Wassertemperatur / Abflussmenge.
 
-**Demo lokal starten:**
+**Lokal starten:**
 
 ```bash
-cd aare-map
-python3 -m http.server 8000
-# → http://localhost:8000
+npm run dev
+# → http://localhost:3000
 ```
 
-Die Seite ist rein statisch (HTML/CSS/JS, kein Build-Schritt, keine API-Keys)
-und kann auf jedem statischen Host deployt werden (GitHub Pages, Netlify,
-Cloudflare Pages, …).
+Die Seite ist rein statisch (HTML/CSS/JS, kein Build-Schritt, keine API-Keys).
+
+**Deployment mit Vercel:** Repo auf GitHub pushen, auf
+[vercel.com](https://vercel.com) importieren – Vercel erkennt die Seite als
+statisches Projekt (kein Framework, keine Konfiguration nötig) und deployt
+bei jedem Push automatisch. Alternativ funktioniert jeder statische Host
+(GitHub Pages, Netlify, Cloudflare Pages, …).
 
 ## Struktur
 
