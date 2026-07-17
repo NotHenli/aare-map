@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aare Böötle – Thun → Bern | Sicherheitskarte</title>
+  <meta name="description" content="Interaktive Karte für die Aare-Bootsfahrt von Thun nach Bern: Einstiege, Gefahrenstellen und Ausstiege, mit Live-Standort und Wassertemperatur.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="topbar">
+    <div id="title">
+      <h1>Aare Böötle <span>Thun → Bern</span></h1>
+    </div>
+    <div id="aare-live" title="Live-Daten: aare.guru">
+      <span id="aare-temp">–</span>
+      <span id="aare-flow">–</span>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <button id="locate-btn" title="Meinen Standort anzeigen">📍</button>
+  <button id="list-btn" title="Streckenpunkte">☰ Strecke</button>
+
+  <nav id="poi-panel" class="hidden">
+    <h2>Streckenpunkte flussabwärts</h2>
+    <ul id="poi-list"></ul>
+    <div id="legend">
+      <span><i class="dot entry"></i> Einstieg</span>
+      <span><i class="dot danger"></i> Gefahr</span>
+      <span><i class="dot exit"></i> Ausstieg</span>
+      <span><i class="dot weir"></i> Gesperrt</span>
+    </div>
+  </nav>
+
+  <footer id="disclaimer">
+    Keine Gewähr – ersetzt nicht die offizielle SLRG-Aarekarte (<a href="https://www.slrg.ch" target="_blank" rel="noopener">slrg.ch</a>).
+    Notfall: <strong>112</strong> · Boot verloren? Polizei melden.
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="data/river.js"></script>
+  <script src="data/pois.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

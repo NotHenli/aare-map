@@ -1,0 +1,117 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --c-entry: #1e9e4a;
+  --c-danger: #d92f2f;
+  --c-exit: #1668c7;
+  --c-weir: #7a1010;
+  --c-river: #2f8fbf;
+}
+
+html, body { height: 100%; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.94);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+#topbar h1 { font-size: 17px; color: #14364f; }
+#topbar h1 span { font-weight: 400; color: #4a6d85; font-size: 14px; margin-left: 4px; }
+
+#aare-live { display: flex; gap: 6px; font-size: 13px; }
+#aare-live span {
+  background: #e8f4fb; color: #14507a; border-radius: 12px;
+  padding: 3px 9px; white-space: nowrap;
+}
+
+#map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
+
+#locate-btn, #list-btn {
+  position: fixed; z-index: 1100; border: none; cursor: pointer;
+  background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,0.4); border-radius: 8px;
+}
+#locate-btn {
+  bottom: 76px; right: 12px;
+  width: 46px; height: 46px; font-size: 22px;
+}
+#locate-btn.active { background: #d9ecff; outline: 2px solid var(--c-exit); }
+#list-btn {
+  bottom: 76px; left: 12px;
+  padding: 12px 14px; font-size: 14px; font-weight: 600; color: #14364f;
+}
+
+#poi-panel {
+  position: fixed; z-index: 1200; left: 0; right: 0; bottom: 0;
+  max-height: 60%; overflow-y: auto;
+  background: #fff; border-radius: 14px 14px 0 0;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.35);
+  padding: 14px 16px 10px;
+  transition: transform 0.25s ease;
+}
+#poi-panel.hidden { transform: translateY(110%); }
+#poi-panel h2 { font-size: 14px; color: #4a6d85; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+
+#poi-list { list-style: none; }
+#poi-list li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 4px; border-bottom: 1px solid #eef2f5;
+  cursor: pointer; font-size: 15px; color: #1c2b36;
+}
+#poi-list li:active { background: #f0f7fc; }
+
+.dot {
+  display: inline-block; width: 13px; height: 13px; border-radius: 50%;
+  flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+}
+.dot.entry { background: var(--c-entry); }
+.dot.danger { background: var(--c-danger); }
+.dot.exit { background: var(--c-exit); }
+.dot.weir { background: var(--c-weir); }
+
+#legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 10px 4px 4px; font-size: 13px; color: #4a6d85; }
+#legend span { display: flex; align-items: center; gap: 5px; }
+
+#disclaimer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 1050;
+  background: rgba(20,54,79,0.92); color: #dce9f2;
+  font-size: 11.5px; padding: 6px 10px; text-align: center; line-height: 1.4;
+}
+#disclaimer a { color: #9fd0f0; }
+
+/* Map markers */
+.poi-icon {
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: #fff; font-size: 15px;
+  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+.poi-icon.entry { background: var(--c-entry); }
+.poi-icon.danger { background: var(--c-danger); }
+.poi-icon.exit { background: var(--c-exit); }
+.poi-icon.weir { background: var(--c-weir); }
+
+.leaflet-popup-content { font-size: 14px; line-height: 1.45; }
+.leaflet-popup-content .popup-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.leaflet-popup-content .popup-title.danger, .leaflet-popup-content .popup-title.weir { color: var(--c-danger); }
+.leaflet-popup-content .popup-en { color: #5a7182; font-size: 12.5px; margin-top: 6px; font-style: italic; }
+
+.user-dot {
+  background: #1668c7; border: 3px solid #fff; border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0,0,0,0.6);
+}
+
+/* keep Leaflet attribution/zoom clear of the disclaimer footer */
+.leaflet-bottom { bottom: 34px; }
+
+@media (max-width: 540px) {
+  #topbar h1 { font-size: 15px; }
+  #topbar h1 span { display: none; }
+  #aare-live span { font-size: 12px; padding: 2px 7px; }
+}
+
+@media (min-width: 700px) {
+  #poi-panel { left: auto; right: 12px; bottom: 40px; width: 340px; border-radius: 12px; max-height: 70%; }
+  #list-btn { bottom: 40px; }
+  #locate-btn { bottom: 40px; }
+}
