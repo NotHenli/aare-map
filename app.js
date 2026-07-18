@@ -14,9 +14,9 @@ L.tileLayer(
 L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 L.control.zoom({ position: 'bottomright' }).addTo(map); // hidden on touch layouts via CSS
 
-// --- River line, trimmed to the trip: Einstieg Schwäbis → Wehr Schwellenmätteli ---
+// --- River line, trimmed to the trip: Einstieg Schwäbis → Ausstieg Marzili ---
 const TRIP_START = POIS.find(p => p.id === 'schwaebis');
-const TRIP_END = POIS.find(p => p.id === 'schwelle');
+const TRIP_END = POIS.find(p => p.id === 'marzili');
 
 function nearestIdx(coords, lat, lon) {
   let best = 0, bestD = Infinity;
@@ -27,18 +27,16 @@ function nearestIdx(coords, lat, lon) {
   return best;
 }
 
-// Longest feature is the main channel; short features are side channels kept as-is.
+// Longest feature is the main channel; side channels are dropped entirely.
 const riverFeats = RIVER_GEOJSON.features.slice()
   .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
 const mainCoords = riverFeats[0].geometry.coordinates;
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
 const iEnd = nearestIdx(mainCoords, TRIP_END.lat, TRIP_END.lon);
+const ROUTE = mainCoords.slice(Math.min(iStart, iEnd), Math.max(iStart, iEnd) + 1);
 const RIVER_TRIMMED = {
   type: 'FeatureCollection',
-  features: [
-    { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: mainCoords.slice(Math.min(iStart, iEnd), Math.max(iStart, iEnd) + 1) } },
-    ...riverFeats.slice(1)
-  ]
+  features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ROUTE } }]
 };
 
 L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
@@ -129,6 +127,62 @@ function toast(msg) {
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 4000);
 }
 
+// --- Along-river distance model (for progress + proximity warnings) ---
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000, rad = Math.PI / 180;
+  const dLat = (lat2 - lat1) * rad, dLon = (lon2 - lon1) * rad;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+// Cumulative metres along the route for every vertex
+const cumDist = [0];
+for (let i = 1; i < ROUTE.length; i++) {
+  cumDist[i] = cumDist[i - 1] + haversine(ROUTE[i - 1][1], ROUTE[i - 1][0], ROUTE[i][1], ROUTE[i][0]);
+}
+const kmAlongRoute = (lat, lon) => cumDist[nearestIdx(ROUTE, lat, lon)] / 1000;
+const distToRoute = (lat, lon) => {
+  const c = ROUTE[nearestIdx(ROUTE, lat, lon)];
+  return haversine(lat, lon, c[1], c[0]);
+};
+
+const MARZILI = POIS.find(p => p.id === 'marzili');
+const KM_MARZILI = kmAlongRoute(MARZILI.lat, MARZILI.lon);
+const HAZARDS = POIS.filter(p => p.type === 'danger' || p.type === 'weir')
+  .map(p => ({ ...p, km: kmAlongRoute(p.lat, p.lon) }));
+
+let floatHours = 3; // refined from live flow data below
+const progressPill = document.getElementById('progress-pill');
+const alerted = {};
+
+function updateProgress(lat, lon) {
+  // Only meaningful while actually on/near the river
+  if (distToRoute(lat, lon) > 500) { progressPill.classList.remove('show', 'danger'); return; }
+  const kmUser = kmAlongRoute(lat, lon);
+  const remaining = KM_MARZILI - kmUser;
+
+  if (remaining > 0.15) {
+    const speed = KM_MARZILI / floatHours; // km/h at current flow
+    const mins = Math.round((remaining / speed) * 60);
+    const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')}` : `${mins} min`;
+    progressPill.textContent = `🏁 Marzili: ${remaining.toFixed(1)} km · ca. ${eta}`;
+    progressPill.classList.remove('danger');
+  } else {
+    progressPill.textContent = '⛔ Marzili passiert – SOFORT aussteigen, Wehr voraus!';
+    progressPill.classList.add('danger');
+  }
+  progressPill.classList.add('show');
+
+  // One-time warning when approaching a hazard from upstream
+  HAZARDS.forEach(h => {
+    const ahead = h.km - kmUser;
+    if (!alerted[h.id] && ahead > 0 && ahead < 0.7) {
+      alerted[h.id] = true;
+      toast(`⚠️ ${h.name} in ${Math.round(ahead * 10) * 100} m`);
+    }
+  });
+}
+
 // --- Geolocation: live position dot (browser asks for permission on first tap) ---
 let userMarker = null, accCircle = null, watching = false, firstFix = true;
 const locateBtn = document.getElementById('locate-btn');
@@ -140,6 +194,8 @@ locateBtn.addEventListener('click', () => {
     locateBtn.classList.remove('active');
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (accCircle) { map.removeLayer(accCircle); accCircle = null; }
+    progressPill.classList.remove('show', 'danger');
+    Object.keys(alerted).forEach(k => delete alerted[k]);
     return;
   }
   watching = true;
@@ -164,6 +220,7 @@ map.on('locationfound', e => {
     accCircle.setLatLng(e.latlng).setRadius(e.accuracy);
   }
   if (firstFix) { map.setView(e.latlng, Math.max(map.getZoom(), 15)); firstFix = false; }
+  updateProgress(e.latlng.lat, e.latlng.lng);
 });
 
 map.on('locationerror', () => {
@@ -177,10 +234,10 @@ map.on('locationerror', () => {
 //   < 100 m³/s ≈ 4 h · 100–120 ≈ 3½ h · 120–160 ≈ 3 h · ≥ 160 ≈ 2½–3 h
 function floatTime(flow) {
   if (flow == null) return null;
-  if (flow >= 160) return '2½–3 h';
-  if (flow >= 120) return '≈ 3 h';
-  if (flow >= 100) return '≈ 3½ h';
-  return '≈ 4 h';
+  if (flow >= 160) { floatHours = 2.75; return '2½–3 h'; }
+  if (flow >= 120) { floatHours = 3; return '≈ 3 h'; }
+  if (flow >= 100) { floatHours = 3.5; return '≈ 3½ h'; }
+  floatHours = 4; return '≈ 4 h';
 }
 
 function setStat(id, text, warn) {

@@ -1,8 +1,11 @@
-# Aare Böötle – Thun → Bern
+# Aare Map – Böötle Thun → Bern
 
 Interaktive Sicherheitskarte für die Aare-Bootsfahrt von Thun nach Bern.
-Zeigt Einstiege, Gefahrenstellen, Ausstiege, den Live-Standort und die
-aktuelle Wassertemperatur / Abflussmenge.
+Zeigt Einstiege, Gefahrenstellen, Ausstiege, Bootsvermietungen und den
+Live-Standort – mit Wassertemperatur, Abfluss (Thun & Bern) und geschätzter
+Fahrzeit von aare.guru. Unterwegs zeigt die App die Restdistanz bis zum
+Ausstieg Marzili und warnt vor Gefahrenstellen. Als PWA auf dem Homescreen
+installierbar.
 
 **Lokal starten:**
 

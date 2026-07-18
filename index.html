@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0b1d2a">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%B6%3C/text%3E%3C/svg%3E">
-  <title>Aare Böötle – Thun → Bern | Sicherheitskarte</title>
-  <meta name="description" content="Interaktive Karte für die Aare-Bootsfahrt von Thun nach Bern: Einstiege, Gefahrenstellen und Ausstiege, mit Live-Standort und Wassertemperatur.">
+  <title>Aare Map – Böötle Thun → Bern</title>
+  <meta name="description" content="Aare Map: Interaktive Karte für die Aare-Bootsfahrt von Thun nach Bern. Einstiege, Gefahrenstellen, Ausstiege, Bootsvermietungen – mit Live-Standort, Wassertemperatur und Fahrzeit.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aare Map">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <link rel="stylesheet" href="style.css">
@@ -16,8 +21,8 @@
 
   <header id="topbar">
     <div id="title-row">
-      <h1>Aare Böötle</h1>
-      <p>Thun → Bern</p>
+      <h1>Aare Map</h1>
+      <p>Böötle · Thun → Bern</p>
     </div>
     <div id="stats" title="Live-Daten: aare.guru">
       <div class="stat"><b id="stat-temp">–</b><span>Wasser Bern</span></div>
@@ -59,6 +64,7 @@
     </div>
   </nav>
 
+  <div id="progress-pill"></div>
   <div id="toast" role="status"></div>
 
   <footer id="disclaimer">
