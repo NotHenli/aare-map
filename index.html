@@ -15,13 +15,15 @@
   <div id="map"></div>
 
   <header id="topbar">
-    <div id="title">
+    <div id="title-row">
       <h1>Aare Böötle</h1>
       <p>Thun → Bern</p>
     </div>
-    <div id="aare-live" title="Live-Daten: aare.guru">
-      <span id="aare-temp" class="chip hidden"></span>
-      <span id="aare-flow" class="chip hidden"></span>
+    <div id="stats" title="Live-Daten: aare.guru">
+      <div class="stat"><b id="stat-temp">–</b><span>Wasser Bern</span></div>
+      <div class="stat"><b id="stat-flow-thun">–</b><span>Abfluss Thun</span></div>
+      <div class="stat"><b id="stat-flow-bern">–</b><span>Abfluss Bern</span></div>
+      <div class="stat"><b id="stat-time">–</b><span>Fahrzeit</span></div>
     </div>
   </header>
 
@@ -53,6 +55,7 @@
       <span><i class="dot danger"></i> Gefahr</span>
       <span><i class="dot exit"></i> Ausstieg</span>
       <span><i class="dot weir"></i> Gesperrt</span>
+      <span><i class="dot rental"></i> Vermietung</span>
     </div>
   </nav>
 
