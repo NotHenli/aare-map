@@ -19,9 +19,9 @@ const POIS = [
       en: 'Aarebootsvermietung'
     },
     desc: {
-      de: 'Schlauchboot-Vermietung an der Regiebrücke – das Haus rechts direkt nach der Brücke (Schwäbisstrasse, Steffisburg). Boote, Schwimmwesten und Trockensäcke – Einwasserung gleich unterhalb.',
-      fr: 'Location de bateaux pneumatiques à la Regiebrücke – la maison à droite juste après le pont (Schwäbisstrasse, Steffisburg). Bateaux, gilets de sauvetage et sacs étanches – mise à l’eau juste en aval.',
-      en: 'Inflatable boat rental at the Regiebrücke – the house on the right just after the bridge. Boats, life jackets and dry bags – launch just downstream.'
+      de: 'Miete ein Boot bei der Aarebootsvermietung – Fahrt von Schwäbis bis nach Bern (Eichholz). Schwimmwesten, Paddel und wasserdichte Tonne inklusive.',
+      fr: 'Louez un bateau chez Aarebootsvermietung – descente de Schwäbis jusqu’à Berne (Eichholz). Gilets de sauvetage, pagaies et tonneau étanche inclus.',
+      en: 'Rent a boat at Aarebootsvermietung – float from Schwäbis down to Eichholz in Bern. Life jackets, paddles and a waterproof barrel are all included.'
     }
   },
   {
@@ -34,9 +34,9 @@ const POIS = [
       en: 'Entry Schwäbis'
     },
     desc: {
-      de: 'Offizielle Einwasserungsstelle. Hier starten die meisten Böötler ab Thun. Rettungsweste anziehen, Nutzlast des Boots beachten.',
-      fr: 'Point de mise à l’eau officiel. La plupart des descentes depuis Thoune partent ici. Portez votre gilet de sauvetage et respectez la charge utile du bateau.',
-      en: 'Official boat entry point. Most floats from Thun start here. Wear your life jacket.'
+      de: 'Offizielle und beliebteste Einwasserungsstelle.',
+      fr: 'Point de mise à l’eau officiel et le plus populaire.',
+      en: 'Official and most popular boat entry point.'
     }
   },
   {
@@ -50,25 +50,9 @@ const POIS = [
       en: 'Uttigen wave (railway bridge)'
     },
     desc: {
-      de: 'Starke Welle unter der Eisenbahnbrücke – die Gefahrenstelle liegt in der Flussmitte und links. RECHTS halten! Für ungeübte Bootsfahrer sehr gefährlich.',
-      fr: 'Forte vague sous le pont ferroviaire – le danger se situe au milieu de la rivière et à gauche. Restez à DROITE ! Très dangereux pour les personnes inexpérimentées.',
-      en: 'Strong standing wave under the railway bridge. Keep to the RIGHT side of the river. Very dangerous for inexperienced boaters.'
-    }
-  },
-  {
-    id: 'uttigen',
-    type: 'entry',
-    lat: 46.79756, lon: 7.58089,
-    minZoom: 16,
-    name: {
-      de: 'Einstieg Uttigen',
-      fr: 'Embarquement Uttigen',
-      en: 'Entry Uttigen'
-    },
-    desc: {
-      de: 'Offizielle Einwasserungsstelle direkt unterhalb der Eisenbahnbrücke – wer hier startet, umgeht die Uttigenwelle.',
-      fr: 'Point de mise à l’eau officiel juste en aval du pont ferroviaire – en partant ici, on évite la vague d’Uttigen.',
-      en: 'Official entry point just below the railway bridge – starting here avoids the Uttigen wave.'
+      de: 'Starke stehende Welle in der Flussmitte unter der Eisenbahnbrücke. RECHTS halten, ca. 5 m vom Ufer entfernt, und das Boot gerade halten. Bitte im Boot bleiben.',
+      fr: 'Forte vague stationnaire au milieu de la rivière, sous le pont ferroviaire. Restez à DROITE, à env. 5 m de la rive, et gardez le bateau droit. Restez dans le bateau.',
+      en: 'Strong standing wave in the middle of the river under the railway bridge. Keep to the RIGHT, about 5 m from the bank, and keep the boat straight. Please stay in the boat.'
     }
   },
   {
@@ -82,9 +66,9 @@ const POIS = [
       en: 'Auguetbrücke (wooden bridge)'
     },
     desc: {
-      de: 'Vorsicht Brückenpfeiler! In der Mitte zwischen den Pfeilern durchfahren. Boote nicht an der Brücke anbinden. Frühzeitig Kurs wählen – die Strömung drückt gegen die Pfeiler.',
-      fr: 'Attention aux piliers du pont ! Passez au MILIEU entre les piliers. Le courant pousse vers les piliers – choisissez votre trajectoire tôt. N’amarrez pas les bateaux au pont.',
-      en: 'Wooden bridge with pillars in the river – pass through the MIDDLE between the pillars. The current pushes towards the pillars, steer early.'
+      de: 'Holzbrücke mit drei Pfeilern im Fluss – links oder rechts zwischen den Pfeilern durchfahren. Boot gerade halten, nicht in Brückennähe schwimmen.',
+      fr: 'Pont en bois avec trois piliers dans la rivière – passez entre les piliers, à gauche ou à droite. Gardez le bateau droit et ne nagez pas près du pont.',
+      en: 'Wooden bridge with three pillars in the river – pass between the pillars on the left or right side. Keep the boat straight and do not swim near the bridge.'
     }
   },
   {
@@ -98,9 +82,9 @@ const POIS = [
       en: 'Exit Eichholz'
     },
     desc: {
-      de: 'Erster Hauptausstieg in Bern: Ausstieg überall in der markierten Zone entlang des Campings Eichholz möglich. Grosse Wiese, Camping, Duschen, WC, Tram Nr. 9.',
-      fr: 'Première sortie principale à Berne : sortie possible partout dans la zone marquée le long du camping Eichholz. Grande prairie, camping, douches, WC, tram n° 9.',
-      en: 'First main exit in Bern: you can get out anywhere in the marked zone along the Camping Eichholz meadow. Showers, WC, tram no. 9.'
+      de: 'Erster und einfachster Hauptausstieg in Bern: Ausstieg überall in der markierten Zone entlang des Campings Eichholz möglich. Duschen, WC – Tram Nr. 9 fährt ins Stadtzentrum.',
+      fr: 'Première sortie principale et la plus facile à Berne : sortie possible partout dans la zone marquée le long du camping Eichholz. Douches, WC – le tram n° 9 vous amène au centre-ville.',
+      en: 'First and easiest main exit in Bern: you can get out anywhere in the marked zone along Camping Eichholz. Showers, WC – tram no. 9 takes you to the city centre.'
     }
   },
   {
@@ -113,9 +97,9 @@ const POIS = [
       en: 'Exit Marzili – LAST EXIT'
     },
     desc: {
-      de: 'Letzte Ausstiegsstelle: der Platz direkt vor der Dalmazibrücke, linkes Ufer. Danach folgt das Schwellenmätteli-Wehr – Lebensgefahr. Hier spätestens aussteigen!',
-      fr: 'Dernière sortie : l’espace juste avant le pont Dalmazibrücke, rive gauche. Ensuite vient le barrage du Schwellenmätteli – danger de mort. Sortez ici au plus tard !',
-      en: 'LAST EXIT: the open space just before the Dalmazibrücke bridge, on the left bank. The deadly Schwellenmätteli weir follows – you must get out here at the latest.'
+      de: 'Marzili ist der LETZTE Ausstieg: Kurz vor der Brücke ans linke Ufer steuern. Weiterfahren ist nicht möglich – danach folgt das Schwellenmätteli-Wehr. Hier spätestens aussteigen!',
+      fr: 'Marzili est la DERNIÈRE sortie : dirigez-vous vers la rive gauche juste avant le pont. Impossible de continuer – le barrage du Schwellenmätteli se trouve juste après. Sortez ici au plus tard !',
+      en: 'Marzili is the LAST exit on the Aare: steer to the left bank just before the bridge. You cannot continue past this point – the Schwellenmätteli weir is right ahead. Get out here at the latest!'
     }
   },
   {

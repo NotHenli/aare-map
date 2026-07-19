@@ -52,8 +52,14 @@ async function optimizeImages(dir) {
       ? [mozjpeg({ quality: 75 })]
       : [pngquant({ quality: [0.6, 0.8], speed: 3 })];
 
-    const data = await imagemin([filePath], { destination: path.dirname(filePath), plugins });
-    await writeFile(filePath, data[0].data);
+    // Optimizer binaries (cjpeg/pngquant) may be missing on some CI hosts (e.g. Vercel);
+    // in that case keep the unoptimized original instead of failing the build.
+    try {
+      const data = await imagemin([filePath], { destination: path.dirname(filePath), plugins });
+      await writeFile(filePath, data[0].data);
+    } catch (err) {
+      console.log(`Skipping optimization for ${entry.name}: ${err.shortMessage || err.message}`);
+    }
   }
 }
 
