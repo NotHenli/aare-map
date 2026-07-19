@@ -19,9 +19,9 @@ const POIS = [
       en: 'Aarebootsvermietung'
     },
     desc: {
-      de: 'Miete ein Boot bei der Aarebootsvermietung – Fahrt von Schwäbis bis nach Bern (Eichholz). Schwimmwesten, Paddel und wasserdichte Tonne inklusive.',
-      fr: 'Louez un bateau chez Aarebootsvermietung – descente de Schwäbis jusqu’à Berne (Eichholz). Gilets de sauvetage, pagaies et tonneau étanche inclus.',
-      en: 'Rent a boat at Aarebootsvermietung – float from Schwäbis down to Eichholz in Bern. Life jackets, paddles and a waterproof barrel are all included.'
+      de: 'Miete ein Boot bei der Aarebootsvermietung – Fahrt von Schwäbis bis nach Bern (Eichholz). Schwimmwesten, Paddel und wasserdichte Tonne inklusive. Aarebootsvermietung-Boote enden in Eichholz, nicht in Marzili.',
+      fr: 'Louez un bateau chez Aarebootsvermietung – descente de Schwäbis jusqu’à Berne (Eichholz). Gilets de sauvetage, pagaies et tonneau étanche inclus. Les bateaux Aarebootsvermietung se terminent à Eichholz, pas à Marzili.',
+      en: 'Rent a boat at Aarebootsvermietung – float from Schwäbis down to Eichholz in Bern. Life jackets, paddles and a waterproof barrel are all included. Aarebootsvermietung rentals finish at Eichholz, not Marzili.'
     }
   },
   {
@@ -82,9 +82,9 @@ const POIS = [
       en: 'Exit Eichholz'
     },
     desc: {
-      de: 'Erster und einfachster Hauptausstieg in Bern: Ausstieg überall in der markierten Zone entlang des Campings Eichholz möglich. Duschen, WC – Tram Nr. 9 fährt ins Stadtzentrum.',
-      fr: 'Première sortie principale et la plus facile à Berne : sortie possible partout dans la zone marquée le long du camping Eichholz. Douches, WC – le tram n° 9 vous amène au centre-ville.',
-      en: 'First and easiest main exit in Bern: you can get out anywhere in the marked zone along Camping Eichholz. Showers, WC – tram no. 9 takes you to the city centre.'
+      de: 'Erster und einfachster Hauptausstieg in Bern: Ausstieg überall in der markierten Zone entlang des Campings Eichholz möglich. Für Aarebootsvermietung-Kunden ist dies der Ausstieg, nicht Marzili. Duschen, WC – Tram Nr. 9 fährt ins Stadtzentrum.',
+      fr: 'Première sortie principale et la plus facile à Berne : sortie possible partout dans la zone marquée le long du camping Eichholz. Pour les clients Aarebootsvermietung, c’est la sortie – pas Marzili. Douches, WC – le tram n° 9 vous amène au centre-ville.',
+      en: 'First and easiest main exit in Bern: you can get out anywhere in the marked zone along Camping Eichholz. This is the exit for Aarebootsvermietung rentals, not Marzili. Showers, WC – tram no. 9 takes you to the city centre.'
     }
   },
   {
@@ -97,9 +97,9 @@ const POIS = [
       en: 'Exit Marzili – LAST EXIT'
     },
     desc: {
-      de: 'Marzili ist der LETZTE Ausstieg: Kurz vor der Brücke ans linke Ufer steuern. Weiterfahren ist nicht möglich – danach folgt das Schwellenmätteli-Wehr. Hier spätestens aussteigen!',
-      fr: 'Marzili est la DERNIÈRE sortie : dirigez-vous vers la rive gauche juste avant le pont. Impossible de continuer – le barrage du Schwellenmätteli se trouve juste après. Sortez ici au plus tard !',
-      en: 'Marzili is the LAST exit on the Aare: steer to the left bank just before the bridge. You cannot continue past this point – the Schwellenmätteli weir is right ahead. Get out here at the latest!'
+      de: 'Marzili ist der LETZTE Ausstieg: Kurz vor der Brücke ans linke Ufer steuern. Aarebootsvermietung-Boote enden in Eichholz, nicht hier. Weiterfahren ist nicht möglich – danach folgt das Schwellenmätteli-Wehr. Hier spätestens aussteigen!',
+      fr: 'Marzili est la DERNIÈRE sortie : dirigez-vous vers la rive gauche juste avant le pont. Les bateaux Aarebootsvermietung s’arrêtent à Eichholz, pas ici. Impossible de continuer – le barrage du Schwellenmätteli se trouve juste après. Sortez ici au plus tard !',
+      en: 'Marzili is the LAST exit on the Aare: steer to the left bank just before the bridge. Aarebootsvermietung rentals end at Eichholz, not here. You cannot continue past this point – the Schwellenmätteli weir is right ahead. Get out here at the latest!'
     }
   },
   {
@@ -137,9 +137,9 @@ const EXIT_ZONES = [
       en: 'Exit zone Eichholz'
     },
     desc: {
-      de: 'Ausstieg überall in dieser Zone entlang des Campings Eichholz möglich.',
-      fr: 'Sortie possible partout dans cette zone le long du camping Eichholz.',
-      en: 'You can get out anywhere in this zone along the Camping Eichholz bank.'
+      de: 'Ausstieg überall in dieser Zone entlang des Campings Eichholz möglich. Für Aarebootsvermietung-Kunden ist dies der Ausstieg, nicht Marzili.',
+      fr: 'Sortie possible partout dans cette zone le long du camping Eichholz. Pour les clients Aarebootsvermietung, c’est la sortie, pas Marzili.',
+      en: 'You can get out anywhere in this zone along the Camping Eichholz bank. This is the exit for Aarebootsvermietung rentals, not Marzili.'
     }
   }
 ];
