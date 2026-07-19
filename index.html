@@ -69,12 +69,30 @@
       von aare.guru. Für die Karte muss JavaScript aktiviert sein.</p>
   </noscript>
 
+  <div id="intro" class="hidden" aria-hidden="true">
+    <div class="intro-inner">
+      <div class="intro-mark">
+        <svg class="intro-wave" viewBox="0 0 120 28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 14c8 8 16 8 24 0s16-8 24 0 16 8 24 0 16-8 24 0 12 6 16 4"/>
+        </svg>
+        <h1>Aare Map</h1>
+        <p id="intro-sub">Böötle · Thun → Bern</p>
+        <img id="intro-partner-logo" class="hidden" src="img/vermietung-logo.png" alt="Aarebootsvermietung">
+        <p id="intro-partner-hint" class="hidden"></p>
+      </div>
+      <button id="intro-btn" type="button">Karte öffnen</button>
+    </div>
+  </div>
+
   <header id="topbar">
     <div id="title-row">
       <div>
         <h1>Aare Map</h1>
         <p data-i18n="subtitle">Böötle · Thun → Bern</p>
       </div>
+      <a id="partner-badge" class="hidden" href="https://aarebootsvermietung.ch" target="_blank" rel="noopener" aria-label="Aarebootsvermietung">
+        <img src="img/vermietung-logo.png" alt="Aarebootsvermietung">
+      </a>
       <div id="lang-switch" role="group" aria-label="Sprache / Langue / Language">
         <button type="button" data-lang="de">DE</button>
         <button type="button" data-lang="fr">FR</button>
@@ -88,6 +106,13 @@
       <div class="stat"><b id="stat-time">–</b><span data-i18n="statTime">Fahrzeit</span></div>
     </div>
   </header>
+
+  <div id="site-alert" class="hidden" role="alert">
+    <span id="site-alert-text"></span>
+    <button id="site-alert-close" aria-label="Schliessen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+    </button>
+  </div>
 
   <button id="locate-btn" aria-label="Meinen Standort anzeigen">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -148,6 +173,7 @@
   <script src="data/river.js"></script>
   <script src="data/messages.js"></script>
   <script src="data/pois.js"></script>
+  <script src="data/site.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

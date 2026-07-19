@@ -15,6 +15,20 @@ const t = key => MESSAGES[LANG][key];        // UI string
 const tr = obj => obj[LANG] || obj.de;       // {de,fr,en} content field
 const fmt = (s, vals) => s.replace(/\{(\w+)\}/g, (m, k) => vals[k]);
 
+// --- Partner mode: /vermietung (or ?p=vermietung) shows the rental-company version ---
+const PARTNER_ID = (() => {
+  const path = location.pathname.replace(/\/$/, '');
+  const fromPath = Object.keys(SITE.partners).find(id => path.endsWith('/' + id));
+  if (fromPath) return fromPath;
+  const q = new URLSearchParams(location.search).get('p');
+  return SITE.partners[q] ? q : null;
+})();
+const PARTNER = PARTNER_ID ? SITE.partners[PARTNER_ID] : null;
+
+// POIs can be limited to one audience via `audience: 'public' | 'partner'` (default: both).
+const AUDIENCE = PARTNER ? 'partner' : 'public';
+const SHOWN = POIS.filter(p => !p.audience || p.audience === 'all' || p.audience === AUDIENCE);
+
 // --- Base map: swisstopo aerial imagery (free, no API key) ---
 const map = L.map('map', { zoomControl: false, attributionControl: false, maxBoundsViscosity: 1.0 });
 
@@ -29,9 +43,11 @@ L.tileLayer(
 L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 L.control.zoom({ position: 'bottomright' }).addTo(map); // hidden on touch layouts via CSS
 
-// --- River line, trimmed to the trip: Einstieg Schwäbis → Ausstieg Marzili ---
+// --- River line, trimmed to the trip: Einstieg Schwäbis → Ausstieg Marzili
+//     (partner trips end earlier, at the partner's exit) ---
 const TRIP_START = POIS.find(p => p.id === 'schwaebis');
-const TRIP_END = POIS.find(p => p.id === 'marzili');
+const MARZILI = POIS.find(p => p.id === 'marzili');
+const TRIP_END = PARTNER ? POIS.find(p => p.id === PARTNER.exitPoiId) : MARZILI;
 
 function nearestIdx(coords, lat, lon) {
   let best = 0, bestD = Infinity;
@@ -47,11 +63,17 @@ const riverFeats = RIVER_GEOJSON.features.slice()
   .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
 const mainCoords = riverFeats[0].geometry.coordinates;
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
-const iEnd = nearestIdx(mainCoords, TRIP_END.lat, TRIP_END.lon);
+const iEnd = nearestIdx(mainCoords, MARZILI.lat, MARZILI.lon);
+// ROUTE always runs to Marzili: distances and hazard warnings must keep working
+// even when a partner customer misses their exit. Only the DISPLAYED line stops
+// at the partner's exit.
 const ROUTE = mainCoords.slice(Math.min(iStart, iEnd), Math.max(iStart, iEnd) + 1);
+const DISPLAY_COORDS = PARTNER
+  ? ROUTE.slice(0, nearestIdx(ROUTE, TRIP_END.lat, TRIP_END.lon) + 1)
+  : ROUTE;
 const RIVER_TRIMMED = {
   type: 'FeatureCollection',
-  features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ROUTE } }]
+  features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: DISPLAY_COORDS } }]
 };
 
 L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
@@ -160,7 +182,7 @@ map.on('popupopen', e => {
 });
 
 const markers = {};
-POIS.forEach(p => {
+SHOWN.forEach(p => {
   const size = (p.type === 'danger' || p.type === 'weir') ? 36 : 32; // matches .poi-icon CSS
   const icon = L.divIcon({
     className: '',
@@ -251,9 +273,11 @@ function updateRouteLabels() {
 // Markers with a minZoom only appear when zoomed in, so nearby icons never overlap.
 function updateMarkerVisibility() {
   const z = map.getZoom();
-  POIS.forEach(p => {
+  SHOWN.forEach(p => {
     const m = markers[p.id];
-    const show = !p.hidden && (!p.minZoom || z >= p.minZoom);
+    // partner pages always show the partner's own rental marker
+    const zoomOk = !p.minZoom || z >= p.minZoom || (PARTNER && p.type === 'rental');
+    const show = !p.hidden && zoomOk;
     if (show && !map.hasLayer(m)) m.addTo(map);
     else if (!show && map.hasLayer(m)) m.remove();
   });
@@ -270,7 +294,7 @@ function openSheet() { panel.classList.remove('hidden'); backdrop.classList.remo
 function closeSheet() { panel.classList.add('hidden'); backdrop.classList.add('hidden'); }
 
 const listNameEls = {};
-POIS.forEach(p => {
+SHOWN.forEach(p => {
   const li = document.createElement('li');
   li.innerHTML =
     `<span class="li-icon ${p.type}">${iconFor(p)}</span>` +
@@ -340,8 +364,9 @@ const distToRoute = (lat, lon) => {
   return haversine(lat, lon, c[1], c[0]);
 };
 
-const MARZILI = POIS.find(p => p.id === 'marzili');
 const KM_MARZILI = kmAlongRoute(MARZILI.lat, MARZILI.lon);
+const KM_DEST = kmAlongRoute(TRIP_END.lat, TRIP_END.lon);
+const DEST_LABEL = PARTNER ? PARTNER.destLabel : 'Marzili';
 const HAZARDS = POIS.filter(p => p.type === 'danger' || p.type === 'weir')
   .map(p => ({ ...p, km: kmAlongRoute(p.lat, p.lon) }));
 
@@ -353,16 +378,20 @@ let lastFix = null; // re-render the pill in the new language on switch
 function updateProgress(lat, lon) {
   lastFix = [lat, lon];
   // Only meaningful while actually on/near the river
-  if (distToRoute(lat, lon) > 500) { progressPill.classList.remove('show', 'danger'); return; }
+  if (distToRoute(lat, lon) > 500) { progressPill.classList.remove('show', 'danger', 'warn'); return; }
   const kmUser = kmAlongRoute(lat, lon);
-  const remaining = KM_MARZILI - kmUser;
+  const remaining = KM_DEST - kmUser;
 
+  progressPill.classList.remove('danger', 'warn');
   if (remaining > 0.15) {
-    const speed = KM_MARZILI / floatHours; // km/h at current flow
+    const speed = KM_MARZILI / floatHours; // km/h at current flow (full-trip average)
     const mins = Math.round((remaining / speed) * 60);
     const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')}` : `${mins} min`;
-    progressPill.textContent = fmt(t('progress'), { km: remaining.toFixed(1), eta });
-    progressPill.classList.remove('danger');
+    progressPill.textContent = fmt(t('progress'), { dest: DEST_LABEL, km: remaining.toFixed(1), eta });
+  } else if (PARTNER && KM_MARZILI - kmUser > 0.15) {
+    // partner customer drifted past their exit – Marzili is now the last chance
+    progressPill.textContent = t('progressMissedExit');
+    progressPill.classList.add('warn');
   } else {
     progressPill.textContent = t('progressDanger');
     progressPill.classList.add('danger');
@@ -379,8 +408,33 @@ function updateProgress(lat, lon) {
   });
 }
 
-// --- Geolocation: live position dot (browser asks for permission on first tap) ---
+// --- Geolocation: your position is a little rubber boat (asks permission on first tap) ---
+// Top view, pointing "up"; rotated toward the direction of travel while floating.
+const BOAT_SVG =
+  '<svg viewBox="0 0 44 58" aria-hidden="true">' +
+  // outer tube
+  '<path d="M22 3C31 3 38 12 38 25v18c0 8-7 12-16 12S6 51 6 43V25C6 12 13 3 22 3Z" fill="#e23d3d" stroke="#ffffff" stroke-width="2.5"/>' +
+  // tube highlight
+  '<path d="M22 7c6.8 0 12 7.4 12 18v17.5c0 5.8-5.2 8.5-12 8.5s-12-2.7-12-8.5V25C10 14.4 15.2 7 22 7Z" fill="#f26060"/>' +
+  // floor
+  '<path d="M22 11c5 0 8.6 6 8.6 14.4v15.2c0 4.4-3.8 6.4-8.6 6.4s-8.6-2-8.6-6.4V25.4C13.4 17 17 11 22 11Z" fill="#fbd6cf"/>' +
+  // bench + paddles
+  '<rect x="13.4" y="30" width="17.2" height="4.5" rx="2" fill="#e23d3d"/>' +
+  '<path d="M8 22 2.5 34M36 22l5.5 12" stroke="#8a5a2b" stroke-width="2.6" stroke-linecap="round"/>' +
+  '<ellipse cx="2.8" cy="37" rx="2.6" ry="4.4" fill="#8a5a2b" transform="rotate(24 2.8 37)"/>' +
+  '<ellipse cx="41.2" cy="37" rx="2.6" ry="4.4" fill="#8a5a2b" transform="rotate(-24 41.2 37)"/>' +
+  '</svg>';
+
+function bearing(lat1, lon1, lat2, lon2) {
+  const rad = Math.PI / 180;
+  const dLon = (lon2 - lon1) * rad;
+  const y = Math.sin(dLon) * Math.cos(lat2 * rad);
+  const x = Math.cos(lat1 * rad) * Math.sin(lat2 * rad) - Math.sin(lat1 * rad) * Math.cos(lat2 * rad) * Math.cos(dLon);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+
 let userMarker = null, accCircle = null, watching = false, firstFix = true;
+let boatEl = null, prevFix = null, boatHeading = 0;
 const locateBtn = document.getElementById('locate-btn');
 
 locateBtn.addEventListener('click', () => {
@@ -390,7 +444,8 @@ locateBtn.addEventListener('click', () => {
     locateBtn.classList.remove('active');
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (accCircle) { map.removeLayer(accCircle); accCircle = null; }
-    progressPill.classList.remove('show', 'danger');
+    boatEl = null; prevFix = null; boatHeading = 0;
+    progressPill.classList.remove('show', 'danger', 'warn');
     Object.keys(alerted).forEach(k => delete alerted[k]);
     return;
   }
@@ -404,22 +459,40 @@ map.on('locationfound', e => {
     userMarker = L.marker(e.latlng, {
       icon: L.divIcon({
         className: '',
-        html: '<div class="user-dot-wrap"><div class="user-pulse"></div><div class="user-dot"></div></div>',
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
+        html: `<div class="user-boat-wrap"><div class="user-pulse"></div><div class="user-boat">${BOAT_SVG}</div></div>`,
+        iconSize: [40, 52],
+        iconAnchor: [20, 26]
       }),
       zIndexOffset: 1000
     }).addTo(map);
+    boatEl = userMarker.getElement().querySelector('.user-boat');
     accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#2e7cf6', fillColor: '#2e7cf6', fillOpacity: 0.08 }).addTo(map);
   } else {
     userMarker.setLatLng(e.latlng);
     accCircle.setLatLng(e.latlng).setRadius(e.accuracy);
+  }
+  // Rotate the boat toward the direction of travel once we have really moved
+  // (small jumps are GPS noise). Unwrap the angle so the CSS transition never
+  // spins the long way round (e.g. 350° → 10° must be a 20° turn).
+  if (prevFix && boatEl) {
+    const moved = haversine(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
+    if (moved > 8) {
+      const target = bearing(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
+      let delta = ((target - boatHeading) % 360 + 540) % 360 - 180;
+      boatHeading += delta;
+      boatEl.style.transform = `rotate(${boatHeading}deg)`;
+      prevFix = e.latlng;
+    }
+  } else {
+    prevFix = e.latlng;
   }
   if (firstFix) { map.setView(e.latlng, Math.max(map.getZoom(), 15)); firstFix = false; }
   updateProgress(e.latlng.lat, e.latlng.lng);
 });
 
 map.on('locationerror', () => {
+  // transient dropouts while already tracking are normal (tunnels, bridges) – keep going
+  if (userMarker) return;
   watching = false; firstFix = true;
   locateBtn.classList.remove('active');
   toast(t('locError'));
@@ -462,6 +535,32 @@ Promise.allSettled([aareGuru('thun'), aareGuru('bern')]).then(([thun, bern]) => 
   }
 }).catch(() => { /* live data is optional; map works without it */ });
 
+// --- Site alert banner (content managed via admin.html → data/site.js) ---
+const siteAlertEl = document.getElementById('site-alert');
+const siteAlertText = document.getElementById('site-alert-text');
+// dismissal is remembered per alert text for this session only
+const alertKey = 'aare-alert-' + (SITE.alert.text.de || '').slice(0, 40);
+const alertDismissed = (() => { try { return sessionStorage.getItem(alertKey); } catch (e) { return null; } })();
+
+function renderSiteAlert() {
+  if (!SITE.alert.enabled || !(SITE.alert.text.de || '').trim() || alertDismissed) return;
+  siteAlertEl.classList.remove('hidden', 'info', 'warn', 'danger');
+  siteAlertEl.classList.add(SITE.alert.level || 'info');
+  siteAlertText.textContent = tr(SITE.alert.text);
+}
+document.getElementById('site-alert-close').addEventListener('click', () => {
+  siteAlertEl.classList.add('hidden');
+  try { sessionStorage.setItem(alertKey, '1'); } catch (e) { /* private mode */ }
+});
+
+// --- Partner header badge ---
+if (PARTNER) {
+  const badge = document.getElementById('partner-badge');
+  badge.href = PARTNER.url;
+  badge.querySelector('img').src = PARTNER.logo;
+  badge.classList.remove('hidden');
+}
+
 // --- Language switcher: re-render every translated surface ---
 function applyLang(lang) {
   LANG = lang;
@@ -469,11 +568,13 @@ function applyLang(lang) {
   document.documentElement.lang = lang;
 
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  if (PARTNER) document.querySelector('[data-i18n="subtitle"]').textContent = t('subtitlePartner');
+  renderSiteAlert();
   document.getElementById('stats').title = t('statsTitle');
   document.getElementById('disclaimer').innerHTML = t('disclaimer');
   locateBtn.setAttribute('aria-label', t('locateAria'));
 
-  POIS.forEach(p => {
+  SHOWN.forEach(p => {
     markers[p.id].setPopupContent(popupHtml(p));
     listNameEls[p.id].textContent = tr(p.name);
     markers[p.id].options.title = tr(p.name); // applied when the marker (re)enters the map
@@ -496,3 +597,39 @@ document.querySelectorAll('#lang-switch button').forEach(b =>
   b.addEventListener('click', () => applyLang(b.dataset.lang))
 );
 applyLang(LANG);
+
+// --- Intro: short branded splash, then the camera flies out over the route.
+//     Shown once per session; a tap (or reduced-motion preference) skips it. ---
+(() => {
+  const intro = document.getElementById('intro');
+  let seen = '1';
+  try { seen = sessionStorage.getItem('aare-intro'); } catch (e) { /* keep '1' – no intro without storage */ }
+  if (seen) { intro.remove(); return; }
+
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('intro-sub').textContent = t(PARTNER ? 'subtitlePartner' : 'subtitle');
+  document.getElementById('intro-btn').textContent = t('introStart');
+  if (PARTNER) {
+    document.getElementById('intro-partner-logo').classList.remove('hidden');
+    const hint = document.getElementById('intro-partner-hint');
+    hint.textContent = t('introHintPartner') + ' · ' + PARTNER.name;
+    hint.classList.remove('hidden');
+  }
+
+  intro.classList.remove('hidden');
+  intro.setAttribute('aria-hidden', 'false');
+  // camera waits on the start point so dismissing reveals a fly-out over the river
+  if (!reducedMotion) map.setView([TRIP_START.lat, TRIP_START.lon], 15, { animate: false });
+
+  let gone = false;
+  const dismiss = () => {
+    if (gone) return;
+    gone = true;
+    try { sessionStorage.setItem('aare-intro', '1'); } catch (e) { /* private mode */ }
+    intro.classList.add('leaving');
+    setTimeout(() => intro.remove(), 750);
+    if (!reducedMotion) map.flyToBounds(OVERVIEW_BOUNDS, { duration: 1.8 });
+  };
+  intro.addEventListener('click', dismiss);
+  setTimeout(dismiss, 3600);
+})();

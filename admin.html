@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Admin publishes by committing data files to GitHub; api.github.com is the
+       only extra endpoint. The token is pasted by the admin and stays in this
+       browser (localStorage) – it is never part of the deployed site. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://wmts.geo.admin.ch; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b1d2a">
+  <title>Aare Map – Admin</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%B6%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="adm-top">
+    <div>
+      <h1>Aare Map <span>Admin</span></h1>
+      <p>Änderungen werden via GitHub veröffentlicht und sind ca. 1 Minute nach dem Speichern live.</p>
+    </div>
+    <a class="adm-back" href="./">→ Zur Karte</a>
+  </header>
+
+  <main>
+    <!-- ===== GitHub connection ===== -->
+    <section class="card" id="sec-token">
+      <h2>Verbindung</h2>
+      <p class="hint">Fine-grained GitHub-Token mit <b>Contents: Read & Write</b> nur für dieses Repository.
+        Erstellen unter <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → Settings → Tokens</a>.
+        Der Token bleibt in diesem Browser.</p>
+      <div class="row">
+        <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
+        <button id="token-save" class="btn">Speichern</button>
+      </div>
+      <p id="token-status" class="status"></p>
+    </section>
+
+    <!-- ===== Site alert ===== -->
+    <section class="card" id="sec-alert">
+      <h2>Site-Alert</h2>
+      <p class="hint">Banner, das allen Besuchern unter dem Titel angezeigt wird – z.&nbsp;B. bei Hochwasser, Streckensperrung oder Veranstaltungen.</p>
+      <div class="row wrap">
+        <label class="check"><input type="checkbox" id="alert-enabled"> Aktiv</label>
+        <select id="alert-level">
+          <option value="info">Info (blau)</option>
+          <option value="warn">Warnung (orange)</option>
+          <option value="danger">Gefahr (rot)</option>
+        </select>
+      </div>
+      <label class="field">Deutsch <textarea id="alert-de" rows="2"></textarea></label>
+      <label class="field">Français <textarea id="alert-fr" rows="2"></textarea></label>
+      <label class="field">English <textarea id="alert-en" rows="2"></textarea></label>
+    </section>
+
+    <!-- ===== POIs ===== -->
+    <section class="card" id="sec-pois">
+      <h2>Streckenpunkte</h2>
+      <p class="hint">Sicherheitspunkte (Gefahr/Wehr) sollten für alle sichtbar bleiben («Alle»).
+        «Nur Vermietung» erscheint ausschliesslich auf <code>/vermietung</code>.</p>
+      <ul id="poi-admin-list"></ul>
+      <button id="poi-add" class="btn ghost">+ Punkt hinzufügen</button>
+    </section>
+
+    <!-- ===== Publish ===== -->
+    <div class="publish-bar">
+      <span id="dirty-note"></span>
+      <button id="download" class="btn ghost">Dateien herunterladen</button>
+      <button id="publish" class="btn primary">Veröffentlichen</button>
+    </div>
+  </main>
+
+  <!-- ===== POI editor dialog ===== -->
+  <div id="editor-wrap" class="hidden">
+    <div id="editor" role="dialog" aria-modal="true">
+      <h3 id="editor-title">Punkt bearbeiten</h3>
+      <div class="grid2">
+        <label class="field">ID <input id="e-id"></label>
+        <label class="field">Typ
+          <select id="e-type">
+            <option value="entry">Einstieg</option>
+            <option value="exit">Ausstieg</option>
+            <option value="danger">Gefahr</option>
+            <option value="weir">Wehr/Gesperrt</option>
+            <option value="rental">Vermietung</option>
+            <option value="info">Info</option>
+          </select>
+        </label>
+        <label class="field">Sichtbar für
+          <select id="e-audience">
+            <option value="">Alle</option>
+            <option value="public">Nur öffentliche Seite</option>
+            <option value="partner">Nur Vermietung</option>
+          </select>
+        </label>
+        <label class="field">Ab Zoom (leer = immer) <input id="e-minzoom" type="number" min="10" max="19"></label>
+        <label class="field">Breitengrad <input id="e-lat" type="number" step="0.00001"></label>
+        <label class="field">Längengrad <input id="e-lon" type="number" step="0.00001"></label>
+      </div>
+      <div id="pick-map"></div>
+      <p class="hint">Auf die Karte tippen, um die Position zu setzen.</p>
+      <label class="field">Website (optional) <input id="e-url" type="url" placeholder="https://…"></label>
+      <label class="field">Name DE <input id="e-name-de"></label>
+      <label class="field">Name FR <input id="e-name-fr"></label>
+      <label class="field">Name EN <input id="e-name-en"></label>
+      <label class="field">Beschreibung DE <textarea id="e-desc-de" rows="3"></textarea></label>
+      <label class="field">Beschreibung FR <textarea id="e-desc-fr" rows="3"></textarea></label>
+      <label class="field">Beschreibung EN <textarea id="e-desc-en" rows="3"></textarea></label>
+      <div class="row right">
+        <button id="e-delete" class="btn danger">Löschen</button>
+        <span class="spacer"></span>
+        <button id="e-cancel" class="btn ghost">Abbrechen</button>
+        <button id="e-save" class="btn primary">Übernehmen</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adm-toast"></div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="data/messages.js"></script>
+  <script src="data/pois.js"></script>
+  <script src="data/site.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

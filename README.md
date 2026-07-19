@@ -24,6 +24,17 @@ prüft zuerst Syntax und Übersetzungen (`npm run check`) und erzeugt dann
 Output-Verzeichnis `dist`, deployt bei jedem Push automatisch. Alternativ
 funktioniert jeder statische Host (GitHub Pages, Netlify, Cloudflare Pages, …).
 
+## Seiten
+
+| URL | Inhalt |
+|---|---|
+| `/` | Öffentliche Karte (Strecke bis Marzili) |
+| `/vermietung` | Version für Aarebootsvermietung: Strecke endet in Eichholz, Partner-Punkte sichtbar, Logo im Header (lokal: `/?p=vermietung`) |
+| `/admin` | Admin: Site-Alert und Streckenpunkte bearbeiten, veröffentlicht per GitHub-Commit (Token nötig, bleibt im Browser) |
+
+POIs können pro Zielgruppe eingeblendet werden (`audience: 'public' | 'partner'`,
+ohne Feld: überall sichtbar). Sicherheitspunkte nie einschränken.
+
 ## Struktur
 
 | Datei | Inhalt |

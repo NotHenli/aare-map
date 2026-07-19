@@ -7,7 +7,7 @@ const vm = require('vm');
 const { execFileSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
-const files = ['app.js', 'data/river.js', 'data/messages.js', 'data/pois.js', 'scripts/build.js'];
+const files = ['app.js', 'admin.js', 'data/river.js', 'data/messages.js', 'data/pois.js', 'data/site.js', 'scripts/build.js'];
 
 let errors = 0;
 const fail = msg => { console.error(`✗ ${msg}`); errors++; };
@@ -25,10 +25,20 @@ for (const file of files) {
 if (errors === 0) {
   // 2. Evaluate the data files in a sandbox and validate translations.
   const context = vm.createContext({});
-  for (const file of ['data/messages.js', 'data/pois.js']) {
+  for (const file of ['data/messages.js', 'data/pois.js', 'data/site.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), context, { filename: file });
   }
-  const { LANGS, MESSAGES, POIS, EXIT_ZONES } = vm.runInContext('({ LANGS, MESSAGES, POIS, EXIT_ZONES })', context);
+  const { LANGS, MESSAGES, POIS, EXIT_ZONES, SITE } = vm.runInContext('({ LANGS, MESSAGES, POIS, EXIT_ZONES, SITE })', context);
+
+  // site.js: alert must have a German text when enabled; partner exits must exist
+  if (SITE.alert.enabled && !(SITE.alert.text.de || '').trim()) {
+    fail('site.js: alert is enabled but text.de is empty');
+  }
+  for (const [id, partner] of Object.entries(SITE.partners)) {
+    if (!POIS.some(p => p.id === partner.exitPoiId)) {
+      fail(`site.js: partner "${id}" exitPoiId "${partner.exitPoiId}" not found in pois.js`);
+    }
+  }
 
   const refKeys = Object.keys(MESSAGES[LANGS[0]]);
   for (const lang of LANGS) {
