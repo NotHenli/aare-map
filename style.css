@@ -28,7 +28,7 @@ html, body {
 #map { position: fixed; inset: 0; z-index: 1; background: #0b1d2a; }
 
 /* ---------- Glass surfaces ---------- */
-.glass, #topbar, #locate-btn, #list-btn, #reset-btn, #poi-panel {
+#topbar, #locate-btn, #list-btn, #reset-btn, #poi-panel {
   background: var(--glass);
   -webkit-backdrop-filter: blur(18px) saturate(1.6);
   backdrop-filter: blur(18px) saturate(1.6);
@@ -414,7 +414,6 @@ html, body {
 .popup-ic.exit { color: var(--c-exit); }
 .popup-ic.weir { color: var(--c-weir); }
 .popup-ic.rental { color: var(--c-rental); }
-.leaflet-popup-content .popup-en { color: #64809a; font-size: 12.5px; margin-top: 7px; font-style: italic; }
 .leaflet-popup-content .popup-img {
   display: block;
   width: 100%;
@@ -524,11 +523,6 @@ html, body {
 
 /* keep zoom control clear of the locate button on desktop */
 .leaflet-control-zoom { margin-bottom: 84px !important; margin-right: 12px !important; }
-
-@media (max-width: 380px) {
-  #title p { display: none; }
-  .chip { font-size: 12px; padding: 4px 9px; }
-}
 
 @media (min-width: 700px) {
   #topbar { left: 16px; right: auto; min-width: 360px; }

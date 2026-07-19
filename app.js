@@ -228,14 +228,14 @@ const zoneLayers = EXIT_ZONES.map(z => {
 });
 
 // --- START / ENDE labels at the trip endpoints (pill style, see .route-label) ---
-function routeLabel(p, cls) {
+function routeLabel(p) {
   return L.marker([p.lat, p.lon], {
     icon: L.divIcon({ className: '', html: '', iconSize: [0, 0] }),
     interactive: false, keyboard: false, zIndexOffset: 700
   }).addTo(map);
 }
-const startLabel = routeLabel(TRIP_START, 'start');
-const endLabel = routeLabel(TRIP_END, 'end');
+const startLabel = routeLabel(TRIP_START);
+const endLabel = routeLabel(TRIP_END);
 
 function updateRouteLabels() {
   startLabel.setIcon(L.divIcon({

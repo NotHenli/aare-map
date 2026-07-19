@@ -1,11 +1,18 @@
 #!/usr/bin/env node
+// Build: copy the site to dist/ and shrink images (resize + recompress with sharp).
 const fs = require('fs');
 const path = require('path');
-const { rm, mkdir, copyFile, readdir, stat, writeFile } = fs.promises;
+const { rm, mkdir, copyFile, readdir, readFile, writeFile } = fs.promises;
 
 const root = path.resolve(__dirname, '..');
 const distDir = path.join(root, 'dist');
-const exclude = new Set(['node_modules', 'dist', '.git', '.github', '.vscode', 'scripts', 'package-lock.json', 'README.md']);
+
+// Not deployed: tooling, docs and the raw geodata (runtime only needs data/river.js).
+const exclude = new Set([
+  'node_modules', 'dist', '.git', '.github', '.vscode', 'scripts',
+  '.gitignore', 'package.json', 'package-lock.json', 'README.md',
+  'river_raw.json', 'river.geojson'
+]);
 
 async function copyDir(src, dest) {
   await mkdir(dest, { recursive: true });
@@ -13,52 +20,45 @@ async function copyDir(src, dest) {
     if (exclude.has(entry.name)) continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath);
-    } else if (entry.isFile()) {
-      await copyFile(srcPath, destPath);
-    }
+    if (entry.isDirectory()) await copyDir(srcPath, destPath);
+    else if (entry.isFile()) await copyFile(srcPath, destPath);
   }
 }
 
 async function optimizeImages(dir) {
-  let imagemin;
+  let sharp;
   try {
-    imagemin = require('imagemin').default;
+    sharp = require('sharp');
   } catch {
-    console.log('imagemin not installed, skipping image optimization');
-    return;
-  }
-
-  let mozjpeg;
-  let pngquant;
-  try {
-    mozjpeg = require('imagemin-mozjpeg').default;
-    pngquant = require('imagemin-pngquant').default;
-  } catch (err) {
-    console.log('imagemin plugins not installed, skipping image optimization');
+    console.log('sharp not installed, skipping image optimization');
     return;
   }
 
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const filePath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      await optimizeImages(filePath);
-      continue;
-    }
-    if (!/\.(jpe?g|png)$/i.test(entry.name)) continue;
+    if (entry.isDirectory()) { await optimizeImages(filePath); continue; }
+    const isJpg = /\.jpe?g$/i.test(entry.name);
+    const isPng = /\.png$/i.test(entry.name);
+    if (!isJpg && !isPng) continue;
 
-    const plugins = entry.name.match(/\.jpe?g$/i)
-      ? [mozjpeg({ quality: 75 })]
-      : [pngquant({ quality: [0.6, 0.8], speed: 3 })];
-
-    // Optimizer binaries (cjpeg/pngquant) may be missing on some CI hosts (e.g. Vercel);
-    // in that case keep the unoptimized original instead of failing the build.
     try {
-      const data = await imagemin([filePath], { destination: path.dirname(filePath), plugins });
-      await writeFile(filePath, data[0].data);
+      // Read via Node (sharp's own file open can fail on OneDrive-synced folders),
+      // then resize + recompress. Popups/lightbox never show images wider than
+      // ~900px; 1600px keeps them sharp on retina screens. Icons (192/512px)
+      // are untouched by the resize.
+      const input = await readFile(filePath);
+      let img = sharp(input).resize({ width: 1600, withoutEnlargement: true });
+      img = isJpg
+        ? img.jpeg({ quality: 78, mozjpeg: true })
+        : img.png({ compressionLevel: 9, palette: true });
+      const data = await img.toBuffer();
+      const before = input.length;
+      if (data.length < before) {
+        await writeFile(filePath, data);
+        console.log(`${entry.name}: ${(before / 1024).toFixed(0)} KB → ${(data.length / 1024).toFixed(0)} KB`);
+      }
     } catch (err) {
-      console.log(`Skipping optimization for ${entry.name}: ${err.shortMessage || err.message}`);
+      console.log(`Skipping optimization for ${entry.name}: ${err.message}`);
     }
   }
 }

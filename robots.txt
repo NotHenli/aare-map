@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /data/river_raw.json
 
 Sitemap: https://aaremap.ch/sitemap.xml

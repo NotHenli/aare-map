@@ -14,13 +14,15 @@ npm run dev
 # → http://localhost:3000
 ```
 
-Die Seite ist rein statisch (HTML/CSS/JS, kein Build-Schritt, keine API-Keys).
+Die Seite ist rein statisch (HTML/CSS/JS, keine API-Keys). `npm run build`
+prüft zuerst Syntax und Übersetzungen (`npm run check`) und erzeugt dann
+`dist/` mit verkleinerten Bildern (sharp). Vor dem Pushen einmal
+`npm run build` laufen lassen.
 
 **Deployment mit Vercel:** Repo auf GitHub pushen, auf
-[vercel.com](https://vercel.com) importieren – Vercel erkennt die Seite als
-statisches Projekt (kein Framework, keine Konfiguration nötig) und deployt
-bei jedem Push automatisch. Alternativ funktioniert jeder statische Host
-(GitHub Pages, Netlify, Cloudflare Pages, …).
+[vercel.com](https://vercel.com) importieren – Build-Command `npm run build`,
+Output-Verzeichnis `dist`, deployt bei jedem Push automatisch. Alternativ
+funktioniert jeder statische Host (GitHub Pages, Netlify, Cloudflare Pages, …).
 
 ## Struktur
 
