@@ -5,7 +5,9 @@
   "description": "Aare float safety map Thun → Bern",
   "scripts": {
     "dev": "npx serve -l 3000 .",
-    "build": "node scripts/build.js"
+    "check": "node scripts/check.js",
+    "build": "npm run check && node scripts/build.js",
+    "test": "npm run build"
   },
   "devDependencies": {
     "imagemin": "^9.0.1",
