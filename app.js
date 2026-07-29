@@ -412,13 +412,13 @@ function updateProgress(lat, lon) {
 const BOAT_SVG =
   '<svg viewBox="0 0 44 58" aria-hidden="true">' +
   // outer tube
-  '<path d="M22 3C31 3 38 12 38 25v18c0 8-7 12-16 12S6 51 6 43V25C6 12 13 3 22 3Z" fill="#e23d3d" stroke="#ffffff" stroke-width="2.5"/>' +
+  '<path d="M22 3C31 3 38 12 38 25v18c0 8-7 12-16 12S6 51 6 43V25C6 12 13 3 22 3Z" fill="#fbbf24" stroke="#000000" stroke-width="2.5"/>' +
   // tube highlight
-  '<path d="M22 7c6.8 0 12 7.4 12 18v17.5c0 5.8-5.2 8.5-12 8.5s-12-2.7-12-8.5V25C10 14.4 15.2 7 22 7Z" fill="#f26060"/>' +
+  '<path d="M22 7c6.8 0 12 7.4 12 18v17.5c0 5.8-5.2 8.5-12 8.5s-12-2.7-12-8.5V25C10 14.4 15.2 7 22 7Z" fill="#e5e7eb"/>' +
   // floor
-  '<path d="M22 11c5 0 8.6 6 8.6 14.4v15.2c0 4.4-3.8 6.4-8.6 6.4s-8.6-2-8.6-6.4V25.4C13.4 17 17 11 22 11Z" fill="#fbd6cf"/>' +
+  '<path d="M22 11c5 0 8.6 6 8.6 14.4v15.2c0 4.4-3.8 6.4-8.6 6.4s-8.6-2-8.6-6.4V25.4C13.4 17 17 11 22 11Z" fill="#d1d5db"/>' +
   // bench + paddles
-  '<rect x="13.4" y="30" width="17.2" height="4.5" rx="2" fill="#e23d3d"/>' +
+  '<rect x="13.4" y="30" width="17.2" height="4.5" rx="2" fill="#4b5563"/>' +
   '<path d="M8 22 2.5 34M36 22l5.5 12" stroke="#8a5a2b" stroke-width="2.6" stroke-linecap="round"/>' +
   '<ellipse cx="2.8" cy="37" rx="2.6" ry="4.4" fill="#8a5a2b" transform="rotate(24 2.8 37)"/>' +
   '<ellipse cx="41.2" cy="37" rx="2.6" ry="4.4" fill="#8a5a2b" transform="rotate(-24 41.2 37)"/>' +
@@ -499,12 +499,14 @@ map.on('locationerror', () => {
 
 // --- Live data from aare.guru: temperature, flow Thun & Bern, float time estimate ---
 // Rule of thumb for Thun→Bern (based on flow at Thun):
-//   < 100 m³/s ≈ 4 h · 100–120 ≈ 3½ h · 120–160 ≈ 3 h · ≥ 160 ≈ 2½–3 h
+//   < 115 ≈ 4 h · 115–130 ≈ 3¾ h · 130–150 ≈ 3½ h · 150–175 ≈ 3¼ h · 175–200 ≈ 3 h · ≥ 200 < 3 h
 function floatTime(flow) {
   if (flow == null) return null;
-  if (flow >= 160) { floatHours = 2.75; return '2½–3 h'; }
-  if (flow >= 120) { floatHours = 3; return '≈ 3 h'; }
-  if (flow >= 100) { floatHours = 3.5; return '≈ 3½ h'; }
+  if (flow >= 200) { floatHours = 2.75; return '< 3 h'; }
+  if (flow >= 175) { floatHours = 3; return '≈ 3 h'; }
+  if (flow >= 150) { floatHours = 3.25; return '≈ 3¼ h'; }
+  if (flow >= 130) { floatHours = 3.5; return '≈ 3½ h'; }
+  if (flow >= 115) { floatHours = 3.75; return '≈ 3¾ h'; }
   floatHours = 4; return '≈ 4 h';
 }
 
