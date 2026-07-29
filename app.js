@@ -33,7 +33,7 @@ const SHOWN = POIS.filter(p => !p.audience || p.audience === 'all' || p.audience
 const map = L.map('map', { zoomControl: false, attributionControl: false, maxBoundsViscosity: 1.0 });
 
 L.tileLayer(
-  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
+  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg',
   {
     maxZoom: 19,
     attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a> · Fluss: © <a href="https://www.openstreetmap.org/copyright">OSM</a> · Live: <a href="https://aare.guru">aare.guru</a>'
@@ -77,6 +77,14 @@ const RIVER_TRIMMED = {
 
 L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
 const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#3ec1ff', weight: 4.5, opacity: 0.95 } }).addTo(map);
+
+// Render danger zones
+const dangerZones = RIVER_GEOJSON.features.filter(f => f.properties.name === 'DangerZone');
+if (dangerZones.length > 0) {
+  L.geoJSON({ type: 'FeatureCollection', features: dangerZones }, {
+    style: { color: '#ef4444', weight: 12, opacity: 0.4, lineCap: 'round', lineJoin: 'round' }
+  }).addTo(map);
+}
 
 // --- Restrict view to the relevant area: no panning away, no zooming out past the route ---
 const routeBounds = riverLine.getBounds();
@@ -433,7 +441,7 @@ function bearing(lat1, lon1, lat2, lon2) {
 }
 
 let userMarker = null, accCircle = null, watching = false, firstFix = true;
-let boatEl = null, prevFix = null, boatHeading = 0;
+let boatEl = null, prevFix = null, boatHeading = 0, compassHeading = null;
 const locateBtn = document.getElementById('locate-btn');
 
 locateBtn.addEventListener('click', () => {
@@ -443,15 +451,46 @@ locateBtn.addEventListener('click', () => {
     locateBtn.classList.remove('active');
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (accCircle) { map.removeLayer(accCircle); accCircle = null; }
-    boatEl = null; prevFix = null; boatHeading = 0;
+    boatEl = null; prevFix = null; boatHeading = 0; compassHeading = null;
     progressPill.classList.remove('show', 'danger', 'warn');
     Object.keys(alerted).forEach(k => delete alerted[k]);
+    window.removeEventListener('deviceorientation', handleOrientation);
+    window.removeEventListener('deviceorientationabsolute', handleOrientation);
     return;
   }
+  
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(state => {
+      if (state === 'granted') window.addEventListener('deviceorientation', handleOrientation);
+    }).catch(() => {});
+  } else {
+    window.addEventListener('deviceorientationabsolute', handleOrientation);
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+  
+  const hint = document.getElementById('locate-hint');
+  if (hint && !hint.classList.contains('hidden')) {
+    hint.classList.add('hidden');
+    try { localStorage.setItem('aare-locate-hint', '1'); } catch(e) {}
+  }
+
   watching = true;
   locateBtn.classList.add('active');
   map.locate({ watch: true, enableHighAccuracy: true });
 });
+
+function handleOrientation(e) {
+  if (e.webkitCompassHeading !== undefined) {
+    compassHeading = e.webkitCompassHeading;
+  } else if (e.alpha !== null) {
+    compassHeading = 360 - e.alpha;
+  }
+  if (compassHeading !== null && boatEl) {
+    let delta = ((compassHeading - boatHeading) % 360 + 540) % 360 - 180;
+    boatHeading += delta;
+    boatEl.style.transform = `rotate(${boatHeading}deg)`;
+  }
+}
 
 map.on('locationfound', e => {
   if (!userMarker) {
@@ -473,7 +512,7 @@ map.on('locationfound', e => {
   // Rotate the boat toward the direction of travel once we have really moved
   // (small jumps are GPS noise). Unwrap the angle so the CSS transition never
   // spins the long way round (e.g. 350° → 10° must be a 20° turn).
-  if (prevFix && boatEl) {
+  if (prevFix && boatEl && compassHeading === null) {
     const moved = haversine(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
     if (moved > 8) {
       const target = bearing(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
@@ -605,7 +644,23 @@ applyLang(LANG);
   const intro = document.getElementById('intro');
   let seen = '1';
   try { seen = sessionStorage.getItem('aare-intro'); } catch (e) { /* keep '1' – no intro without storage */ }
-  if (seen) { intro.remove(); return; }
+  
+  const showLocateHint = () => {
+    try {
+      if (!localStorage.getItem('aare-locate-hint')) {
+        setTimeout(() => {
+          const hint = document.getElementById('locate-hint');
+          if (hint) hint.classList.remove('hidden');
+        }, 1500);
+      }
+    } catch(e) {}
+  };
+
+  if (seen) { 
+    intro.remove(); 
+    showLocateHint();
+    return; 
+  }
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('intro-sub').textContent = t(PARTNER ? 'subtitlePartner' : 'subtitle');
@@ -630,6 +685,7 @@ applyLang(LANG);
     intro.classList.add('leaving');
     setTimeout(() => intro.remove(), 750);
     if (!reducedMotion) map.flyToBounds(OVERVIEW_BOUNDS, { duration: 1.8 });
+    showLocateHint();
   };
   intro.addEventListener('click', dismiss);
   setTimeout(dismiss, 3600);

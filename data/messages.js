@@ -30,6 +30,7 @@ const MESSAGES = {
     hazardAhead: '⚠️ {name} in {m} m',
     locError: 'Standort nicht verfügbar – bitte Standortfreigabe im Browser erlauben.',
     locateAria: 'Meinen Standort anzeigen',
+    locateHint: 'Eigenen Standort anzeigen',
     highFlow: '⚠️ Hoher Abfluss ({flow} m³/s in Bern) – Bootsfahrt nur für Geübte!',
     disclaimer: 'Keine Gewähr – offizielle <a href="https://www.slrg.ch" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Standort bleibt auf dem Gerät · Notfall <strong>112</strong>'
   },
@@ -60,6 +61,7 @@ const MESSAGES = {
     hazardAhead: '⚠️ {name} dans {m} m',
     locError: 'Position indisponible – veuillez autoriser la localisation dans votre navigateur.',
     locateAria: 'Afficher ma position',
+    locateHint: 'Afficher ma position',
     highFlow: '⚠️ Débit élevé ({flow} m³/s à Berne) – navigation réservée aux personnes expérimentées !',
     disclaimer: 'Sans garantie – consultez la <a href="https://www.slrg.ch" target="_blank" rel="noopener">carte officielle SSS de l’Aar</a> · Votre position reste sur l’appareil · Urgence <strong>112</strong>'
   },
@@ -90,6 +92,7 @@ const MESSAGES = {
     hazardAhead: '⚠️ {name} in {m} m',
     locError: 'Location unavailable – please allow location access in your browser.',
     locateAria: 'Show my location',
+    locateHint: 'Show my location',
     highFlow: '⚠️ High flow ({flow} m³/s in Bern) – boating for experienced paddlers only!',
     disclaimer: 'No guarantee – follow the official <a href="https://www.slrg.ch" target="_blank" rel="noopener">SLRG Aare map</a> · Your location stays on your device · Emergency <strong>112</strong>'
   }

@@ -11,10 +11,21 @@
   <meta name="theme-color" content="#0b1d2a">
   <link rel="preconnect" href="https://wmts.geo.admin.ch">
   <link rel="preconnect" href="https://aareguru.existenz.ch" crossorigin>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9B%B6%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="img/favicon.png">
   <title>Aare Map – Aareböötle von Thun nach Bern | Karte mit Einstiegen, Gefahren & Ausstiegen</title>
   <meta name="description" content="Interaktive Aare-Karte fürs Böötle von Thun nach Bern: Einstieg Schwäbis, Uttigenwelle, Auguetbrücke, Ausstieg Eichholz, Bootsvermietung – mit Live-Wassertemperatur, Abfluss und Fahrzeit.">
+  <meta name="keywords" content="Aareböötle, Böötle, Aare, Thun, Bern, Bärn, Thoune, Berne, Schwäbis, Eichholz, Schlauchboot, Gummiboot, bateau pneumatique, descente de l'Aar, Uttigenwelle, Aare bootsvermietung, location bateau Aar, aare map, aare karte, carte aare, river float">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://aaremap.ch/">
+  <!-- TODO: When the new German and French domains are purchased, uncomment and update these hreflang tags -->
+  <!--
+  <link rel="alternate" hreflang="de-CH" href="https://neue-schweizerdeutsche-domain.ch/">
+  <link rel="alternate" hreflang="de" href="https://neue-deutsche-domain.ch/">
+  <link rel="alternate" hreflang="fr-CH" href="https://nouvelle-domaine-francaise.ch/">
+  <link rel="alternate" hreflang="fr" href="https://nouvelle-domaine-francaise.ch/">
+  <link rel="alternate" hreflang="en" href="https://aaremap.ch/">
+  <link rel="alternate" hreflang="x-default" href="https://aaremap.ch/">
+  -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aaremap.ch/">
   <meta property="og:site_name" content="Aare Map">
@@ -114,6 +125,7 @@
     </button>
   </div>
 
+  <div id="locate-hint" class="hidden" data-i18n="locateHint">Eigenen Standort anzeigen</div>
   <button id="locate-btn" aria-label="Meinen Standort anzeigen">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <circle cx="12" cy="12" r="3.2"/>

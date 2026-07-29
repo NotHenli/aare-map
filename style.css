@@ -652,3 +652,42 @@ html, body {
   #list-btn { bottom: 46px; left: 16px; }
   #locate-btn { bottom: 46px; }
 }
+
+
+/* ---------- Locate Hint ---------- */
+#locate-hint {
+  position: fixed;
+  bottom: calc(45px + env(safe-area-inset-bottom, 0px));
+  right: 65px;
+  background: #3b82f6;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  animation: hint-bounce 2s infinite ease-in-out;
+}
+#locate-hint::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #3b82f6;
+}
+#locate-hint.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+}
+@keyframes hint-bounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-5px); }
+}
