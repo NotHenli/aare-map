@@ -58,13 +58,27 @@ function nearestIdx(coords, lat, lon) {
   return best;
 }
 
-// Sort non-DangerZone features shortest-first. The curving diversion is shorter [0],
-// the main straight bottom channel is longer [1].
+// Main river channel
 const riverFeats = RIVER_GEOJSON.features.slice()
   .filter(f => f.properties.name !== 'DangerZone')
-  .sort((a, b) => a.geometry.coordinates.length - b.geometry.coordinates.length);
-// [1] = longer/straight = main (bottom, blue); [0] = shorter/curving = diversion (top, red)
-const mainCoords = (riverFeats[1] || riverFeats[0]).geometry.coordinates;
+  .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
+let mainCoords = riverFeats[0].geometry.coordinates;
+
+// The "DangerZone" feature's 4 coordinates form the straight main channel through the
+// diversion section – the Aare GeoJSON incorrectly routes through the curving side meander.
+// Splice the DangerZone shortcut in to replace that meander section.
+const dangerZoneFeature = RIVER_GEOJSON.features.find(f => f.properties.name === 'DangerZone');
+if (dangerZoneFeature) {
+  const dzCoords = dangerZoneFeature.geometry.coordinates;
+  const dzStartIdx = nearestIdx(mainCoords, dzCoords[0][1], dzCoords[0][0]);
+  const dzEndIdx   = nearestIdx(mainCoords, dzCoords[dzCoords.length - 1][1], dzCoords[dzCoords.length - 1][0]);
+  mainCoords = [
+    ...mainCoords.slice(0, dzStartIdx),
+    ...dzCoords,
+    ...mainCoords.slice(dzEndIdx + 1)
+  ];
+}
+
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
 const SCHWELLE = POIS.find(p => p.id === 'schwelle');
 const iEnd = nearestIdx(mainCoords, SCHWELLE.lat, SCHWELLE.lon);
@@ -77,20 +91,6 @@ const RIVER_TRIMMED = {
   type: 'FeatureCollection',
   features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: DISPLAY_COORDS } }]
 };
-
-// Render all other (non-main) channels in red as diversion/side routes
-riverFeats.filter(f => f.geometry.coordinates !== mainCoords).forEach(feat => {
-  L.geoJSON(feat, { style: { color: '#ef4444', weight: 5, opacity: 0.75, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
-});
-
-
-// Render danger zones (separate DangerZone features)
-const dangerZones = RIVER_GEOJSON.features.filter(f => f.properties.name === 'DangerZone');
-if (dangerZones.length > 0) {
-  L.geoJSON({ type: 'FeatureCollection', features: dangerZones }, {
-    style: { color: '#ef4444', weight: 12, opacity: 0.4, lineCap: 'round', lineJoin: 'round' }
-  }).addTo(map);
-}
 
 // Main route: white outline underneath, then blue on top
 L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
