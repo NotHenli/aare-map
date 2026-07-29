@@ -33,7 +33,7 @@ const SHOWN = POIS.filter(p => !p.audience || p.audience === 'all' || p.audience
 const map = L.map('map', { zoomControl: false, attributionControl: false, maxBoundsViscosity: 1.0 });
 
 L.tileLayer(
-  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg',
+  'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
   {
     maxZoom: 19,
     attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a> · Fluss: © <a href="https://www.openstreetmap.org/copyright">OSM</a> · Live: <a href="https://aare.guru">aare.guru</a>'
