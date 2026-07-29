@@ -4,7 +4,7 @@ Interaktive Sicherheitskarte für die Aare-Bootsfahrt von Thun nach Bern.
 Zeigt Einstiege, Gefahrenstellen, Ausstiege, Bootsvermietungen und den
 Live-Standort – mit Wassertemperatur, Abfluss (Thun & Bern) und geschätzter
 Fahrzeit von aare.guru. Unterwegs zeigt die App die Restdistanz bis zum
-Ausstieg Marzili und warnt vor Gefahrenstellen. Als PWA auf dem Homescreen
+Ausstieg Eichholz und warnt vor Gefahrenstellen. Als PWA auf dem Homescreen
 installierbar.
 
 **Lokal starten:**
@@ -28,7 +28,7 @@ funktioniert jeder statische Host (GitHub Pages, Netlify, Cloudflare Pages, …)
 
 | URL | Inhalt |
 |---|---|
-| `/` | Öffentliche Karte (Strecke bis Marzili) |
+| `/` | Öffentliche Karte (Strecke bis Eichholz) |
 | `/vermietung` | Version für Aarebootsvermietung: Strecke endet in Eichholz, Partner-Punkte sichtbar, Logo im Header (lokal: `/?p=vermietung`) |
 | `/admin` | Admin: Site-Alert und Streckenpunkte bearbeiten, veröffentlicht per GitHub-Commit (Token nötig, bleibt im Browser) |
 

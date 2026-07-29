@@ -12,7 +12,7 @@ JPG-Datei mit der passenden ID liegt (Querformat, ca. 800×500 px empfohlen):
 | `uttigen.jpg` | Einstieg Uttigen |
 | `auguetbruecke.jpg` | Auguetbrücke |
 | `eichholz.jpg` | Ausstieg Eichholz |
-| `marzili.jpg` | Ausstieg Marzili |
+
 | `schwelle.jpg` | Wehr Schwellenmätteli |
 
 Fehlt eine Datei, wird das Popup einfach ohne Bild angezeigt.

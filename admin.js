@@ -171,7 +171,7 @@ function saveEditor() {
 
 function deleteEditor() {
   const p = state.pois[editIndex];
-  if (['schwaebis', 'marzili', 'schwelle', 'eichholz'].includes(p.id)) {
+  if (['schwaebis', 'schwelle', 'eichholz'].includes(p.id)) {
     return toast('Dieser Punkt ist sicherheitsrelevant bzw. Streckenanfang/-ende und kann nicht gelöscht werden.');
   }
   if (!confirm(`«${p.name.de}» wirklich löschen?`)) return;

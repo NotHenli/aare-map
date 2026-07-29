@@ -43,11 +43,11 @@ L.tileLayer(
 L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 L.control.zoom({ position: 'bottomright' }).addTo(map); // hidden on touch layouts via CSS
 
-// --- River line, trimmed to the trip: Einstieg Schwäbis → Ausstieg Marzili
+// --- River line, trimmed to the trip: Einstieg Schwäbis → Ausstieg Eichholz
 //     (partner trips end earlier, at the partner's exit) ---
 const TRIP_START = POIS.find(p => p.id === 'schwaebis');
-const MARZILI = POIS.find(p => p.id === 'marzili');
-const TRIP_END = PARTNER ? POIS.find(p => p.id === PARTNER.exitPoiId) : MARZILI;
+const EICHHOLZ = POIS.find(p => p.id === 'eichholz');
+const TRIP_END = PARTNER ? POIS.find(p => p.id === PARTNER.exitPoiId) : EICHHOLZ;
 
 function nearestIdx(coords, lat, lon) {
   let best = 0, bestD = Infinity;
@@ -63,14 +63,13 @@ const riverFeats = RIVER_GEOJSON.features.slice()
   .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
 const mainCoords = riverFeats[0].geometry.coordinates;
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
-const iEnd = nearestIdx(mainCoords, MARZILI.lat, MARZILI.lon);
-// ROUTE always runs to Marzili: distances and hazard warnings must keep working
-// even when a partner customer misses their exit. Only the DISPLAYED line stops
-// at the partner's exit.
+const SCHWELLE = POIS.find(p => p.id === 'schwelle');
+const iEnd = nearestIdx(mainCoords, SCHWELLE.lat, SCHWELLE.lon);
+// ROUTE always runs to Schwelle: distances and hazard warnings must keep working
+// even when a customer misses their exit. Only the DISPLAYED line stops
+// at the exit.
 const ROUTE = mainCoords.slice(Math.min(iStart, iEnd), Math.max(iStart, iEnd) + 1);
-const DISPLAY_COORDS = PARTNER
-  ? ROUTE.slice(0, nearestIdx(ROUTE, TRIP_END.lat, TRIP_END.lon) + 1)
-  : ROUTE;
+const DISPLAY_COORDS = ROUTE.slice(0, nearestIdx(ROUTE, TRIP_END.lat, TRIP_END.lon) + 1);
 const RIVER_TRIMMED = {
   type: 'FeatureCollection',
   features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: DISPLAY_COORDS } }]
@@ -364,9 +363,9 @@ const distToRoute = (lat, lon) => {
   return haversine(lat, lon, c[1], c[0]);
 };
 
-const KM_MARZILI = kmAlongRoute(MARZILI.lat, MARZILI.lon);
+const KM_EICHHOLZ = kmAlongRoute(EICHHOLZ.lat, EICHHOLZ.lon);
 const KM_DEST = kmAlongRoute(TRIP_END.lat, TRIP_END.lon);
-const DEST_LABEL = PARTNER ? PARTNER.destLabel : 'Marzili';
+const DEST_LABEL = PARTNER ? PARTNER.destLabel : 'Eichholz';
 const HAZARDS = POIS.filter(p => p.type === 'danger' || p.type === 'weir')
   .map(p => ({ ...p, km: kmAlongRoute(p.lat, p.lon) }));
 
@@ -384,12 +383,12 @@ function updateProgress(lat, lon) {
 
   progressPill.classList.remove('danger', 'warn');
   if (remaining > 0.15) {
-    const speed = KM_MARZILI / floatHours; // km/h at current flow (full-trip average)
+    const speed = KM_EICHHOLZ / floatHours; // km/h at current flow (full-trip average)
     const mins = Math.round((remaining / speed) * 60);
     const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')}` : `${mins} min`;
     progressPill.textContent = fmt(t('progress'), { dest: DEST_LABEL, km: remaining.toFixed(1), eta });
-  } else if (PARTNER && KM_MARZILI - kmUser > 0.15) {
-    // partner customer drifted past their exit – Marzili is now the last chance
+  } else if (PARTNER && KM_EICHHOLZ - kmUser > 0.15) {
+    // partner customer drifted past their exit – Eichholz is now the last chance
     progressPill.textContent = t('progressMissedExit');
     progressPill.classList.add('warn');
   } else {
