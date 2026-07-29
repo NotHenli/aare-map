@@ -58,9 +58,10 @@ function nearestIdx(coords, lat, lon) {
   return best;
 }
 
-// Longest feature is the main channel; side channels are dropped entirely.
+// Shortest feature is the main (bottom) channel; the longer curving side channel is shown in red.
 const riverFeats = RIVER_GEOJSON.features.slice()
-  .sort((a, b) => b.geometry.coordinates.length - a.geometry.coordinates.length);
+  .filter(f => f.properties.name !== 'DangerZone')
+  .sort((a, b) => a.geometry.coordinates.length - b.geometry.coordinates.length);
 const mainCoords = riverFeats[0].geometry.coordinates;
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
 const SCHWELLE = POIS.find(p => p.id === 'schwelle');
@@ -75,10 +76,12 @@ const RIVER_TRIMMED = {
   features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: DISPLAY_COORDS } }]
 };
 
-L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
-const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#3ec1ff', weight: 4.5, opacity: 0.95 } }).addTo(map);
+// Render side channels (top/curving route) in red, then the main route in blue on top
+riverFeats.slice(1).forEach(feat => {
+  L.geoJSON(feat, { style: { color: '#ef4444', weight: 5, opacity: 0.75, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
+});
 
-// Render danger zones
+// Render danger zones (separate DangerZone features)
 const dangerZones = RIVER_GEOJSON.features.filter(f => f.properties.name === 'DangerZone');
 if (dangerZones.length > 0) {
   L.geoJSON({ type: 'FeatureCollection', features: dangerZones }, {
@@ -86,6 +89,9 @@ if (dangerZones.length > 0) {
   }).addTo(map);
 }
 
+// Main route: white outline underneath, then blue on top
+L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
+const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#3ec1ff', weight: 4.5, opacity: 0.95 } }).addTo(map);
 // --- Restrict view to the relevant area: no panning away, no zooming out past the route ---
 const routeBounds = riverLine.getBounds();
 map.fitBounds(routeBounds.pad(0.06)); // small margin so endpoint labels stay on screen
