@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- aaremap.ch – English / default -->
   <url>
     <loc>https://aaremap.ch/</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en"      href="https://aaremap.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de"      href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de-CH"   href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr"      href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH"   href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aaremap.ch/"/>
   </url>
   <url>
     <loc>https://aaremap.ch/vermietung</loc>
@@ -13,4 +21,33 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- aarekarte.ch – German (DE / DE-CH) -->
+  <url>
+    <loc>https://aarekarte.ch/</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en"      href="https://aaremap.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de"      href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de-CH"   href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr"      href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH"   href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aaremap.ch/"/>
+  </url>
+
+  <!-- aarecarte.ch – French (FR / FR-CH) -->
+  <url>
+    <loc>https://aarecarte.ch/</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en"      href="https://aaremap.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de"      href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="de-CH"   href="https://aarekarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr"      href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH"   href="https://aarecarte.ch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aaremap.ch/"/>
+  </url>
+
 </urlset>
