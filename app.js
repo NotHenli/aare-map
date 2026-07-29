@@ -58,11 +58,13 @@ function nearestIdx(coords, lat, lon) {
   return best;
 }
 
-// Shortest feature is the main (bottom) channel; the longer curving side channel is shown in red.
+// Sort non-DangerZone features shortest-first. The curving diversion is shorter [0],
+// the main straight bottom channel is longer [1].
 const riverFeats = RIVER_GEOJSON.features.slice()
   .filter(f => f.properties.name !== 'DangerZone')
   .sort((a, b) => a.geometry.coordinates.length - b.geometry.coordinates.length);
-const mainCoords = riverFeats[0].geometry.coordinates;
+// [1] = longer/straight = main (bottom, blue); [0] = shorter/curving = diversion (top, red)
+const mainCoords = (riverFeats[1] || riverFeats[0]).geometry.coordinates;
 const iStart = nearestIdx(mainCoords, TRIP_START.lat, TRIP_START.lon);
 const SCHWELLE = POIS.find(p => p.id === 'schwelle');
 const iEnd = nearestIdx(mainCoords, SCHWELLE.lat, SCHWELLE.lon);
@@ -76,10 +78,11 @@ const RIVER_TRIMMED = {
   features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: DISPLAY_COORDS } }]
 };
 
-// Render side channels (top/curving route) in red, then the main route in blue on top
-riverFeats.slice(1).forEach(feat => {
+// Render all other (non-main) channels in red as diversion/side routes
+riverFeats.filter(f => f.geometry.coordinates !== mainCoords).forEach(feat => {
   L.geoJSON(feat, { style: { color: '#ef4444', weight: 5, opacity: 0.75, lineCap: 'round', lineJoin: 'round' } }).addTo(map);
 });
+
 
 // Render danger zones (separate DangerZone features)
 const dangerZones = RIVER_GEOJSON.features.filter(f => f.properties.name === 'DangerZone');
