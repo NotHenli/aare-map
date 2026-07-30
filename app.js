@@ -136,7 +136,14 @@ const ICONS = {
   // inflatable boat, top view
   rental: svgIcon('<rect x="6" y="3" width="12" height="18" rx="6"/><rect x="9.2" y="7" width="5.6" height="10" rx="2.8"/>'),
   // camera (photo placeholder in popups)
-  photo: svgIcon('<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/><circle cx="12" cy="13.2" r="3.2"/>')
+  photo: svgIcon('<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7 10 4.5h4L15.5 7"/><circle cx="12" cy="13.2" r="3.2"/>'),
+  // fork and knife (restaurant)
+  restaurant: svgIcon(
+    '<line x1="8.5" y1="3" x2="8.5" y2="21"/>' +
+    '<path d="M6 3v6a2.5 2.5 0 0 0 5 0V3"/>' +
+    '<line x1="15.5" y1="3" x2="15.5" y2="21"/>' +
+    '<path d="M13 3c0 0 2.5 2 2.5 5s-2.5 5-2.5 5v8"/>'
+  )
 };
 const iconFor = p => ICONS[p.icon || p.type];
 
@@ -647,55 +654,12 @@ document.querySelectorAll('#lang-switch button').forEach(b =>
 );
 applyLang(LANG);
 
-// --- Intro: short branded splash, then the camera flies out over the route.
-//     Shown once per session; a tap (or reduced-motion preference) skips it. ---
-(() => {
-  const intro = document.getElementById('intro');
-  let seen = '1';
-  try { seen = sessionStorage.getItem('aare-intro'); } catch (e) { /* keep '1' – no intro without storage */ }
-  
-  const showLocateHint = () => {
-    try {
-      if (!localStorage.getItem('aare-locate-hint')) {
-        setTimeout(() => {
-          const hint = document.getElementById('locate-hint');
-          if (hint) hint.classList.remove('hidden');
-        }, 1500);
-      }
-    } catch(e) {}
-  };
-
-  if (seen) { 
-    intro.remove(); 
-    showLocateHint();
-    return; 
+// Show the locate button hint on first visit (previously gated by the intro splash)
+try {
+  if (!localStorage.getItem('aare-locate-hint')) {
+    setTimeout(() => {
+      const hint = document.getElementById('locate-hint');
+      if (hint) hint.classList.remove('hidden');
+    }, 1500);
   }
-
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.getElementById('intro-sub').textContent = t(PARTNER ? 'subtitlePartner' : 'subtitle');
-  document.getElementById('intro-btn').textContent = t('introStart');
-  if (PARTNER) {
-    document.getElementById('intro-partner-logo').classList.remove('hidden');
-    const hint = document.getElementById('intro-partner-hint');
-    hint.textContent = t('introHintPartner') + ' · ' + PARTNER.name;
-    hint.classList.remove('hidden');
-  }
-
-  intro.classList.remove('hidden');
-  intro.setAttribute('aria-hidden', 'false');
-  // camera waits on the start point so dismissing reveals a fly-out over the river
-  if (!reducedMotion) map.setView([TRIP_START.lat, TRIP_START.lon], 15, { animate: false });
-
-  let gone = false;
-  const dismiss = () => {
-    if (gone) return;
-    gone = true;
-    try { sessionStorage.setItem('aare-intro', '1'); } catch (e) { /* private mode */ }
-    intro.classList.add('leaving');
-    setTimeout(() => intro.remove(), 750);
-    if (!reducedMotion) map.flyToBounds(OVERVIEW_BOUNDS, { duration: 1.8 });
-    showLocateHint();
-  };
-  intro.addEventListener('click', dismiss);
-  setTimeout(dismiss, 3600);
-})();
+} catch(e) {}

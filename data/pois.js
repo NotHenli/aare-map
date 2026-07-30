@@ -56,6 +56,22 @@ const POIS = [
     }
   },
   {
+    id: 'rubigen-wyderwasser',
+    type: 'restaurant',
+    lat: 46.89011, lon: 7.53777,
+    url: 'https://www.wyderwasser.ch',
+    name: {
+      de: 'Rubigen – Wyderwasser',
+      fr: 'Rubigen – Wyderwasser',
+      en: 'Rubigen – Wyderwasser'
+    },
+    desc: {
+      de: 'Ausstieg RECHTS, ca. 100 m nach den Brückenpfeilern. Restaurant Campagna liegt auf der LINKEN Seite. Wyderwasser-Beizli direkt am Strand rechts. Grillplatz für Gruppen mit Reservation vorhanden.',
+      fr: 'Sortie à DROITE, env. 100 m après les piliers du pont. Le Restaurant Campagna se trouve sur la rive GAUCHE. Le bar Wyderwasser est directement sur la plage à droite. Place de gril disponible pour les groupes sur réservation.',
+      en: 'Exit on the RIGHT, about 100 m after the bridge pillars. Restaurant Campagna is on the LEFT bank. The Wyderwasser beach bar is on the right bank. BBQ spot available for booked groups.'
+    }
+  },
+  {
     id: 'auguetbruecke',
     type: 'danger',
     icon: 'bridge',
