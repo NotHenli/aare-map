@@ -382,20 +382,19 @@ html, body {
 }
 
 /* ---------- User location: rubber boat ---------- */
-.user-boat-wrap { position: relative; width: 40px; height: 52px; }
+.user-boat-wrap {
+  position: relative; width: 40px; height: 52px;
+  animation: boat-bob 3s ease-in-out infinite; /* bob on the outer wrapper so it doesn't fight JS rotation */
+}
 .user-boat {
   position: absolute; inset: 0;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
-  transition: transform 0.9s ease; /* smooth turning toward the direction of travel */
-  will-change: transform;
+  will-change: transform; /* rAF loop handles rotation – no CSS transition */
 }
-.user-boat svg {
-  width: 100%; height: 100%;
-  animation: boat-bob 3s ease-in-out infinite;
-}
+.user-boat svg { width: 100%; height: 100%; }
 @keyframes boat-bob {
-  0%, 100% { transform: rotate(-2.5deg); }
-  50% { transform: rotate(2.5deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
 }
 .user-pulse {
   position: absolute; inset: -4px;
@@ -408,7 +407,7 @@ html, body {
   100% { transform: scale(1.8); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .user-boat svg, .user-pulse { animation: none; }
+  .user-boat-wrap, .user-pulse { animation: none; }
 }
 
 

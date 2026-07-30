@@ -457,8 +457,78 @@ function bearing(lat1, lon1, lat2, lon2) {
 }
 
 let userMarker = null, accCircle = null, watching = false, firstFix = true;
-let boatEl = null, prevFix = null, boatHeading = 0, compassHeading = null;
+let boatEl = null, prevFix = null;
 const locateBtn = document.getElementById('locate-btn');
+
+// --- Smooth heading system ---
+// rawCompass  : latest reading straight from the sensor (noisy)
+// smoothCompass: low-pass filtered compass value (noise killed)
+// targetHeading: what we want to rotate toward (unwrapped, in degrees)
+// displayHeading: what's currently on screen (lerps toward target each rAF frame)
+let rawCompass = null, smoothCompass = null;
+let targetHeading = 0, displayHeading = 0;
+let hasAbsoluteCompass = false; // true once deviceorientationabsolute fires
+let rafId = null;
+
+// Low-pass filter strength: 0 = keep old, 1 = take new immediately.
+// 0.15 kills jitter while still reacting within ~0.5 s to a real turn.
+const COMPASS_LP = 0.15;
+// Lerp speed per rAF frame (~60 fps). 0.12 ≈ Google Maps feel.
+const HEADING_LERP = 0.12;
+
+// Unwrap `next` relative to `current` so we always rotate the short way.
+function unwrapAngle(current, next) {
+  let delta = ((next - current) % 360 + 540) % 360 - 180;
+  return current + delta;
+}
+
+function headingRaf() {
+  if (!boatEl) { rafId = null; return; }
+  // Lerp display toward target — smooth, frame-rate-independent enough at 60 fps
+  displayHeading += (targetHeading - displayHeading) * HEADING_LERP;
+  boatEl.style.transform = `rotate(${displayHeading}deg)`;
+  rafId = requestAnimationFrame(headingRaf);
+}
+
+function startRaf() {
+  if (!rafId) rafId = requestAnimationFrame(headingRaf);
+}
+function stopRaf() {
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+}
+
+// Called by both deviceorientation and deviceorientationabsolute.
+// Absolute (true-north) events win and suppress relative ones.
+function handleOrientation(e) {
+  const isAbsolute = e.type === 'deviceorientationabsolute' || e.absolute === true;
+  if (!isAbsolute && hasAbsoluteCompass) return; // ignore relative once we have absolute
+  if (isAbsolute) hasAbsoluteCompass = true;
+
+  let raw;
+  if (e.webkitCompassHeading != null) {
+    // iOS — already in true-north degrees, 0 = north, clockwise
+    raw = e.webkitCompassHeading;
+  } else if (e.alpha != null) {
+    // Android / Chrome — alpha is CCW from north when absolute
+    raw = (360 - e.alpha) % 360;
+  } else {
+    return;
+  }
+
+  // Low-pass filter to smooth sensor noise
+  if (smoothCompass === null) {
+    smoothCompass = raw;
+  } else {
+    // Circular LP filter — average through the short arc
+    const delta = ((raw - smoothCompass + 540) % 360) - 180;
+    smoothCompass = (smoothCompass + delta * COMPASS_LP + 360) % 360;
+  }
+  rawCompass = raw;
+
+  // Update the unwrapped target (never spin the long way)
+  targetHeading = unwrapAngle(targetHeading, smoothCompass);
+  startRaf();
+}
 
 locateBtn.addEventListener('click', () => {
   if (watching) {
@@ -467,23 +537,33 @@ locateBtn.addEventListener('click', () => {
     locateBtn.classList.remove('active');
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (accCircle) { map.removeLayer(accCircle); accCircle = null; }
-    boatEl = null; prevFix = null; boatHeading = 0; compassHeading = null;
+    boatEl = null; prevFix = null;
+    rawCompass = null; smoothCompass = null; hasAbsoluteCompass = false;
+    targetHeading = 0; displayHeading = 0;
+    stopRaf();
     progressPill.classList.remove('show', 'danger', 'warn');
     Object.keys(alerted).forEach(k => delete alerted[k]);
     window.removeEventListener('deviceorientation', handleOrientation);
     window.removeEventListener('deviceorientationabsolute', handleOrientation);
     return;
   }
-  
-  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission().then(state => {
-      if (state === 'granted') window.addEventListener('deviceorientation', handleOrientation);
-    }).catch(() => {});
+
+  // Request compass permission on iOS 13+, then register both event types.
+  // deviceorientationabsolute is preferred (true north); deviceorientation
+  // is the fallback (may be relative to device boot orientation).
+  const registerEvents = () => {
+    window.addEventListener('deviceorientationabsolute', handleOrientation, { passive: true });
+    window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+  };
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(state => { if (state === 'granted') registerEvents(); })
+      .catch(() => {});
   } else {
-    window.addEventListener('deviceorientationabsolute', handleOrientation);
-    window.addEventListener('deviceorientation', handleOrientation);
+    registerEvents();
   }
-  
+
   const hint = document.getElementById('locate-hint');
   if (hint && !hint.classList.contains('hidden')) {
     hint.classList.add('hidden');
@@ -494,19 +574,6 @@ locateBtn.addEventListener('click', () => {
   locateBtn.classList.add('active');
   map.locate({ watch: true, enableHighAccuracy: true });
 });
-
-function handleOrientation(e) {
-  if (e.webkitCompassHeading !== undefined) {
-    compassHeading = e.webkitCompassHeading;
-  } else if (e.alpha !== null) {
-    compassHeading = 360 - e.alpha;
-  }
-  if (compassHeading !== null && boatEl) {
-    let delta = ((compassHeading - boatHeading) % 360 + 540) % 360 - 180;
-    boatHeading += delta;
-    boatEl.style.transform = `rotate(${boatHeading}deg)`;
-  }
-}
 
 map.on('locationfound', e => {
   if (!userMarker) {
@@ -521,28 +588,30 @@ map.on('locationfound', e => {
     }).addTo(map);
     boatEl = userMarker.getElement().querySelector('.user-boat');
     accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#2e7cf6', fillColor: '#2e7cf6', fillOpacity: 0.08 }).addTo(map);
+    startRaf(); // begin animating as soon as the marker exists
   } else {
     userMarker.setLatLng(e.latlng);
     accCircle.setLatLng(e.latlng).setRadius(e.accuracy);
   }
-  // Rotate the boat toward the direction of travel once we have really moved
-  // (small jumps are GPS noise). Unwrap the angle so the CSS transition never
-  // spins the long way round (e.g. 350° → 10° must be a 20° turn).
-  if (prevFix && boatEl && compassHeading === null) {
+
+  // GPS bearing: used only when no compass data is available.
+  // Only update targetHeading from GPS when we've actually moved (avoids noisy
+  // position jumps flipping the boat direction randomly while stationary).
+  if (rawCompass === null && prevFix) {
     const moved = haversine(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
     if (moved > 8) {
-      const target = bearing(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
-      let delta = ((target - boatHeading) % 360 + 540) % 360 - 180;
-      boatHeading += delta;
-      boatEl.style.transform = `rotate(${boatHeading}deg)`;
+      const gpsBearing = bearing(prevFix.lat, prevFix.lng, e.latlng.lat, e.latlng.lng);
+      targetHeading = unwrapAngle(targetHeading, gpsBearing);
       prevFix = e.latlng;
     }
   } else {
     prevFix = e.latlng;
   }
+
   if (firstFix) { map.setView(e.latlng, Math.max(map.getZoom(), 15)); firstFix = false; }
   updateProgress(e.latlng.lat, e.latlng.lng);
 });
+
 
 map.on('locationerror', () => {
   // transient dropouts while already tracking are normal (tunnels, bridges) – keep going
