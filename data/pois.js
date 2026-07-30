@@ -59,7 +59,6 @@ const POIS = [
     id: 'rubigen-wyderwasser',
     type: 'restaurant',
     lat: 46.89011, lon: 7.53777,
-    url: 'https://www.wyderwasser.ch',
     name: {
       de: 'Rubigen – Wyderwasser',
       fr: 'Rubigen – Wyderwasser',
