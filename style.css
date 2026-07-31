@@ -233,6 +233,15 @@ html, body {
 .li-icon.restaurant { background: rgba(234, 108, 0, 0.13); color: var(--c-restaurant); }
 
 .li-name { flex: 1; line-height: 1.3; }
+.li-eta {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--c-accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 0;
+}
 .li-chevron { width: 16px; height: 16px; color: #9db2c2; flex-shrink: 0; }
 
 .dot {
@@ -473,6 +482,19 @@ html, body {
   object-fit: cover;
   border-radius: 12px;
   margin: 4px 0 8px;
+}
+.popup-eta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--c-accent);
+  background: rgba(46, 124, 246, 0.10);
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin: 2px 0 8px;
+  font-variant-numeric: tabular-nums;
 }
 .leaflet-popup-content .popup-img.zoomable { cursor: zoom-in; }
 /* shown while the photo file doesn't exist yet – displays the expected filename */

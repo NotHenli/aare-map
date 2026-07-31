@@ -147,9 +147,28 @@ const ICONS = {
 };
 const iconFor = p => ICONS[p.icon || p.type];
 
-function popupHtml(p) {
+function popupHtml(p, kmUser) {
+  // kmUser is optional; passed in when the popup is refreshed during live tracking.
+  let etaHtml = '';
+  if (kmUser != null) {
+    const kmPoi = POI_KM[p.id];
+    if (kmPoi != null) {
+      const kmAhead = kmPoi - kmUser;
+      if (kmAhead > 0.04) {
+        const speed = KM_EICHHOLZ / floatHours;
+        const mins = Math.round((kmAhead / speed) * 60);
+        if (mins > 0) {
+          const etaStr = mins >= 60
+            ? `${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')} min`
+            : `${mins} min`;
+          etaHtml = `<div class="popup-eta">⏱ ${etaStr}</div>`;
+        }
+      }
+    }
+  }
   return (
     `<div class="popup-title ${p.type}"><span class="popup-ic ${p.type}">${iconFor(p)}</span>${tr(p.name)}</div>` +
+    etaHtml +
     `<img class="popup-img" src="img/${p.id}.jpg" alt="">` +
     `<div>${tr(p.desc)}</div>` +
     (p.url ? `<a class="popup-link" href="${p.url}" target="_blank" rel="noopener">${t('website')}</a>` : '')
@@ -203,6 +222,8 @@ map.on('popupopen', e => {
     img.addEventListener('error', usePlaceholder);
   }
 });
+
+
 
 const markers = {};
 SHOWN.forEach(p => {
@@ -317,13 +338,16 @@ function openSheet() { panel.classList.remove('hidden'); backdrop.classList.remo
 function closeSheet() { panel.classList.add('hidden'); backdrop.classList.add('hidden'); }
 
 const listNameEls = {};
+const listEtaEls = {};
 SHOWN.forEach(p => {
   const li = document.createElement('li');
   li.innerHTML =
     `<span class="li-icon ${p.type}">${iconFor(p)}</span>` +
     `<span class="li-name">${tr(p.name)}</span>` +
+    `<span class="li-eta"></span>` +
     `<svg class="li-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`;
   listNameEls[p.id] = li.querySelector('.li-name');
+  listEtaEls[p.id] = li.querySelector('.li-eta');
   li.addEventListener('click', () => {
     closeSheet();
     // opening the popup zooms to the spot via the popupopen handler (focusOn)
@@ -338,6 +362,41 @@ SHOWN.forEach(p => {
   });
   list.appendChild(li);
 });
+
+// ETA helpers ----------------------------------------------------------------
+// Returns a human-readable "X min" / "Xh Ym" string for a POI ahead of the
+// user, or null when the POI is behind or the user isn't on the river.
+function etaForPoi(p, kmUser) {
+  const kmPoi = POI_KM[p.id];
+  if (kmPoi == null) return null;
+  const kmAhead = kmPoi - kmUser;
+  if (kmAhead <= 0.04) return null; // already passed or right here
+  const speed = KM_EICHHOLZ / floatHours; // km/h – same as progress pill
+  const mins = Math.round((kmAhead / speed) * 60);
+  if (mins <= 0) return null;
+  return mins >= 60
+    ? `${Math.floor(mins / 60)} h ${String(mins % 60).padStart(2, '0')} min`
+    : `${mins} min`;
+}
+
+// Update every list-item ETA badge and refresh the currently open popup.
+function refreshEta(kmUser) {
+  SHOWN.forEach(p => {
+    const el = listEtaEls[p.id];
+    if (!el) return;
+    const eta = etaForPoi(p, kmUser);
+    el.textContent = eta ? eta : '';
+  });
+
+  // Also refresh the popup that is currently open, if any.
+  const openPopup = map._popup;
+  if (!openPopup) return;
+  SHOWN.forEach(p => {
+    if (markers[p.id] && markers[p.id].isPopupOpen()) {
+      markers[p.id].setPopupContent(popupHtml(p, kmUser));
+    }
+  });
+}
 
 document.getElementById('list-btn').addEventListener('click', () =>
   panel.classList.contains('hidden') ? openSheet() : closeSheet()
@@ -393,6 +452,11 @@ const DEST_LABEL = PARTNER ? PARTNER.destLabel : 'Eichholz';
 const HAZARDS = POIS.filter(p => p.type === 'danger' || p.type === 'weir')
   .map(p => ({ ...p, km: kmAlongRoute(p.lat, p.lon) }));
 
+// Pre-compute each POI's km position along the route for ETA calculations.
+const POI_KM = {};
+SHOWN.forEach(p => { POI_KM[p.id] = kmAlongRoute(p.lat, p.lon); });
+
+
 let floatHours = 3; // refined from live flow data below
 const progressPill = document.getElementById('progress-pill');
 const alerted = {};
@@ -429,6 +493,9 @@ function updateProgress(lat, lon) {
       toast(fmt(t('hazardAhead'), { name: tr(h.name), m: Math.round(ahead * 10) * 100 }));
     }
   });
+
+  // Update ETA badges on list items and the currently open popup.
+  refreshEta(kmUser);
 }
 
 // --- Geolocation: your position is a little rubber boat (asks permission on first tap) ---
@@ -588,6 +655,7 @@ map.on('locationfound', e => {
     }).addTo(map);
     boatEl = userMarker.getElement().querySelector('.user-boat');
     accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#2e7cf6', fillColor: '#2e7cf6', fillOpacity: 0.08 }).addTo(map);
+    userMarker.on('click', () => focusOn(userMarker.getLatLng()));
     startRaf(); // begin animating as soon as the marker exists
   } else {
     userMarker.setLatLng(e.latlng);
@@ -700,7 +768,8 @@ function applyLang(lang) {
   locateBtn.setAttribute('aria-label', t('locateAria'));
 
   SHOWN.forEach(p => {
-    markers[p.id].setPopupContent(popupHtml(p));
+    const kmUser = (watching && lastFix) ? kmAlongRoute(lastFix[0], lastFix[1]) : null;
+    markers[p.id].setPopupContent(popupHtml(p, kmUser));
     listNameEls[p.id].textContent = tr(p.name);
     markers[p.id].options.title = tr(p.name); // applied when the marker (re)enters the map
     const el = markers[p.id].getElement();
