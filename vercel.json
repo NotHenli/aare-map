@@ -1,7 +1,17 @@
 {
   "version": 2,
   "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "aaremap.ch" }], "destination": "https://www.aaremap.ch/$1", "permanent": true },
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "aarekarte.ch" }], "destination": "https://www.aaremap.ch/$1", "permanent": true },
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "www.aarekarte.ch" }], "destination": "https://www.aaremap.ch/$1", "permanent": true },
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "aarecarte.ch" }], "destination": "https://www.aaremap.ch/$1", "permanent": true },
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "www.aarecarte.ch" }], "destination": "https://www.aaremap.ch/$1", "permanent": true }
+  ],
   "rewrites": [
+    { "source": "/de", "destination": "/index.html" },
+    { "source": "/fr", "destination": "/index.html" },
+    { "source": "/en", "destination": "/index.html" },
     { "source": "/vermietung", "destination": "/index.html" },
     { "source": "/admin", "destination": "/admin.html" }
   ]

@@ -3,6 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin.html
 
-Sitemap: https://aaremap.ch/sitemap.xml
-Sitemap: https://aarekarte.ch/sitemap.xml
-Sitemap: https://aarecarte.ch/sitemap.xml
+Sitemap: https://www.aaremap.ch/sitemap.xml
