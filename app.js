@@ -239,16 +239,20 @@ SHOWN.forEach(p => {
   markers[p.id] = m;
 });
 
-// The rental marker shows the Aarebootsvermietung logo once img/vermietung-logo.png
-// exists (preloaded here – keeps the SVG fallback without inline error handlers).
+// Both rental markers (start + return) show the Aarebootsvermietung logo once
+// img/vermietung-logo.png exists (preloaded here – keeps the SVG fallback without inline error handlers).
 (() => {
   const logo = new Image();
-  logo.onload = () => markers['vermietung-schwaebis'].setIcon(L.divIcon({
+  const logoIcon = () => L.divIcon({
     className: '',
     html: `<div class="poi-icon rental"><img class="poi-icon-img" src="img/vermietung-logo.png" alt=""></div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16]
-  }));
+  });
+  logo.onload = () => {
+    if (markers['vermietung-schwaebis']) markers['vermietung-schwaebis'].setIcon(logoIcon());
+    if (markers['vermietung-eichholz'])  markers['vermietung-eichholz'].setIcon(logoIcon());
+  };
   logo.src = 'img/vermietung-logo.png';
 })();
 

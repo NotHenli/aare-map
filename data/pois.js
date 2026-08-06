@@ -104,6 +104,24 @@ const POIS = [
   },
 
   {
+    id: 'vermietung-eichholz',
+    type: 'rental',
+    lat: 46.93260, lon: 7.45960,
+    minZoom: 15,
+    url: 'https://aarebootsvermietung.ch',
+    name: {
+      de: 'Bootrückgabe Eichholz',
+      fr: 'Retour bateau Eichholz',
+      en: 'Boat return Eichholz'
+    },
+    desc: {
+      de: 'Rückgabeort für Aarebootsvermietung-Kunden: Boot hier ans Ufer bringen und dem Team übergeben. Der Ausstieg ist überall in der markierten Zone entlang des Campings möglich.',
+      fr: "Point de retour pour les clients Aarebootsvermietung : amenez le bateau ici et remettez-le à l'équipe. La sortie est possible partout dans la zone marquée le long du camping.",
+      en: 'Return point for Aarebootsvermietung customers: bring the boat to shore here and hand it to the team. Exit is possible anywhere in the marked zone along the camping.'
+    }
+  },
+
+  {
     id: 'schwelle',
     type: 'weir',
     lat: 46.94578, lon: 7.45191,
