@@ -106,7 +106,7 @@ const POIS = [
   {
     id: 'vermietung-eichholz',
     type: 'rental',
-    lat: 46.93260, lon: 7.45960,
+    lat: 46.93300, lon: 7.45620,
     minZoom: 15,
     url: 'https://aarebootsvermietung.ch',
     name: {
