@@ -106,7 +106,7 @@ const POIS = [
   {
     id: 'vermietung-eichholz',
     type: 'rental',
-    lat: 46.93300, lon: 7.45620,
+    lat: 46.93335, lon: 7.45745,
     minZoom: 15,
     url: 'https://aarebootsvermietung.ch',
     name: {
@@ -148,7 +148,7 @@ const EXIT_ZONES = [
     photo: 'eichholz', // popup photo file: img/eichholz.jpg (shared with the Eichholz POI)
     // extended further west and east to better match the park paths/trees
     from: { lat: 46.93478, lon: 7.45900 }, // extend more to the path end on the left
-    to:   { lat: 46.93415, lon: 7.45480 }, // extend a bit more to the right until trees clear
+    to: { lat: 46.93415, lon: 7.45480 }, // extend a bit more to the right until trees clear
     side: 'left',
     name: {
       de: 'Ausstiegszone Eichholz',
