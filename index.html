@@ -239,12 +239,30 @@
 
   <div id="locate-hint" class="hidden" data-i18n="locateHint">Eigenen Standort anzeigen</div>
   <button id="locate-btn" aria-label="Meinen Standort anzeigen">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <circle cx="12" cy="12" r="3.2"/>
-      <path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22"/>
-      <circle cx="12" cy="12" r="7.5"/>
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+      <path d="M2.5 12.5 L21.5 3.5 L14.5 21.5 L11.5 13.5 Z"/>
     </svg>
   </button>
+
+  <!-- iOS location permission guide (shown when Safari blocks geolocation) -->
+  <div id="loc-perm-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loc-perm-title">
+    <div id="loc-perm-box">
+      <div id="loc-perm-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M2.5 12.5 L21.5 3.5 L14.5 21.5 L11.5 13.5 Z"/></svg>
+      </div>
+      <h2 id="loc-perm-title" data-i18n="permTitle">Standort freigeben</h2>
+      <p data-i18n="permBody">Safari blockiert den Zugriff auf deinen Standort. So aktivierst du ihn:</p>
+      <ol id="loc-perm-steps">
+        <li data-i18n-html="permStep1">Tippe unten auf <strong>Einstellungen öffnen</strong></li>
+        <li data-i18n-html="permStep2">Gehe zu <strong>Einstellungen → Datenschutz &amp; Sicherheit → Ortungsdienste → Safari</strong></li>
+        <li data-i18n-html="permStep3">Wähle <strong>Beim Verwenden der App</strong> oder <strong>Fragen</strong></li>
+        <li data-i18n="permStep4">Komme zurück und tippe erneut auf den Standort-Pfeil</li>
+      </ol>
+      <a id="loc-perm-settings" href="App-prefs:root=LOCATION_SERVICES" data-i18n="permSettings">Einstellungen öffnen ↗</a>
+      <button id="loc-perm-close" data-i18n="permClose">Schliessen</button>
+    </div>
+  </div>
+
 
   <button id="list-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

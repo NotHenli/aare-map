@@ -655,7 +655,19 @@ map.on('locationfound', e => {
     }).addTo(map);
     boatEl = userMarker.getElement().querySelector('.user-boat');
     accCircle = L.circle(e.latlng, { radius: e.accuracy, weight: 1, color: '#2e7cf6', fillColor: '#2e7cf6', fillOpacity: 0.08 }).addTo(map);
-    userMarker.on('click', () => focusOn(userMarker.getLatLng()));
+    // Boat click: toggle between close zoom and overview.
+    let boatZoomedIn = false;
+    userMarker.on('click', () => {
+      if (!boatZoomedIn) {
+        focusOn(userMarker.getLatLng());
+        boatZoomedIn = true;
+      } else {
+        map.flyToBounds(OVERVIEW_BOUNDS, { duration: 0.8 });
+        boatZoomedIn = false;
+      }
+    });
+    // Reset toggle state whenever the user manually pans/zooms away.
+    map.once('movestart', () => { boatZoomedIn = false; });
     startRaf(); // begin animating as soon as the marker exists
   } else {
     userMarker.setLatLng(e.latlng);
@@ -681,13 +693,28 @@ map.on('locationfound', e => {
 });
 
 
-map.on('locationerror', () => {
+map.on('locationerror', e => {
   // transient dropouts while already tracking are normal (tunnels, bridges) – keep going
   if (userMarker) return;
   watching = false; firstFix = true;
   locateBtn.classList.remove('active');
-  toast(t('locError'));
+  // Error code 1 = permission denied – show the in-page guide instead of a plain toast.
+  if (e.code === 1) {
+    showPermModal();
+  } else {
+    toast(t('locError'));
+  }
 });
+
+// --- Location permission modal (Safari / iOS) ---
+const locPermModal = document.getElementById('loc-perm-modal');
+const locPermClose = document.getElementById('loc-perm-close');
+function showPermModal() { locPermModal.classList.remove('hidden'); }
+function hidePermModal() { locPermModal.classList.add('hidden'); }
+locPermClose.addEventListener('click', hidePermModal);
+locPermModal.addEventListener('click', e => { if (e.target === locPermModal) hidePermModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePermModal(); });
+
 
 // --- Live data from aare.guru: temperature, flow Thun & Bern, float time estimate ---
 // Rule of thumb for Thun→Bern (based on flow at Thun):
@@ -761,6 +788,8 @@ function applyLang(lang) {
   document.documentElement.lang = lang;
 
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  // Permission modal steps contain <strong> tags — use innerHTML for those.
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
   if (PARTNER) document.querySelector('[data-i18n="subtitle"]').textContent = t('subtitlePartner');
   renderSiteAlert();
   document.getElementById('stats').title = t('statsTitle');

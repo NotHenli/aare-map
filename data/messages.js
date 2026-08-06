@@ -32,6 +32,14 @@ const MESSAGES = {
     locateAria: 'Meinen Standort anzeigen',
     locateHint: 'Eigenen Standort anzeigen',
     highFlow: '⚠️ Hoher Abfluss ({flow} m³/s in Bern) – Bootsfahrt nur für Geübte!',
+    permTitle: 'Standort freigeben',
+    permBody: 'Safari blockiert den Zugriff auf deinen Standort. So aktivierst du ihn:',
+    permStep1: 'Tippe unten auf <strong>Einstellungen öffnen</strong>',
+    permStep2: 'Gehe zu <strong>Einstellungen → Datenschutz & Sicherheit → Ortungsdienste → Safari</strong>',
+    permStep3: 'Wähle <strong>Beim Verwenden der App</strong> oder <strong>Fragen</strong>',
+    permStep4: 'Komme zurück und tippe erneut auf den Standort-Pfeil',
+    permSettings: 'Einstellungen öffnen ↗',
+    permClose: 'Schliessen',
     disclaimer: 'Keine Gewähr – offizielle <a href="https://www.slrg.ch" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Standort bleibt auf dem Gerät · Notfall <strong>112</strong>'
   },
   fr: {
@@ -63,6 +71,14 @@ const MESSAGES = {
     locateAria: 'Afficher ma position',
     locateHint: 'Afficher ma position',
     highFlow: '⚠️ Débit élevé ({flow} m³/s à Berne) – navigation réservée aux personnes expérimentées !',
+    permTitle: 'Autoriser la localisation',
+    permBody: 'Safari bloque l’accès à votre position. Voici comment l’activer :',
+    permStep1: 'Appuyez ci-dessous sur <strong>Ouvrir les réglages</strong>',
+    permStep2: 'Allez dans <strong>Réglages → Confidentialité & sécurité → Service de localisation → Safari</strong>',
+    permStep3: 'Choisissez <strong>Lors de l’utilisation</strong> ou <strong>Demander</strong>',
+    permStep4: 'Revenez ici et appuyez à nouveau sur la flèche de localisation',
+    permSettings: 'Ouvrir les réglages ↗',
+    permClose: 'Fermer',
     disclaimer: 'Sans garantie – consultez la <a href="https://www.slrg.ch" target="_blank" rel="noopener">carte officielle SSS de l’Aar</a> · Votre position reste sur l’appareil · Urgence <strong>112</strong>'
   },
   en: {
@@ -94,6 +110,14 @@ const MESSAGES = {
     locateAria: 'Show my location',
     locateHint: 'Show my location',
     highFlow: '⚠️ High flow ({flow} m³/s in Bern) – boating for experienced paddlers only!',
+    permTitle: 'Enable location',
+    permBody: 'Safari is blocking access to your location. Here’s how to enable it:',
+    permStep1: 'Tap <strong>Open Settings</strong> below',
+    permStep2: 'Go to <strong>Settings → Privacy & Security → Location Services → Safari</strong>',
+    permStep3: 'Choose <strong>While Using the App</strong> or <strong>Ask</strong>',
+    permStep4: 'Come back here and tap the location arrow again',
+    permSettings: 'Open Settings ↗',
+    permClose: 'Close',
     disclaimer: 'No guarantee – follow the official <a href="https://www.slrg.ch" target="_blank" rel="noopener">SLRG Aare map</a> · Your location stays on your device · Emergency <strong>112</strong>'
   }
 };
