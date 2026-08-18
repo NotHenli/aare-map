@@ -11,8 +11,8 @@ const storedLang = (() => { try { return localStorage.getItem('aare-lang'); } ca
 const navLangs = (navigator.languages || [navigator.language || 'de']).map(l => String(l).slice(0, 2).toLowerCase());
 let LANG = LANGS.includes(storedLang) ? storedLang : (navLangs.find(l => LANGS.includes(l)) || 'de');
 
-const t = key => MESSAGES[LANG][key];        // UI string
-const tr = obj => obj[LANG] || obj.de;       // {de,fr,en} content field
+const t = key => (MESSAGES[LANG] && MESSAGES[LANG][key]) || (MESSAGES.en && MESSAGES.en[key]) || (MESSAGES.de && MESSAGES.de[key]) || '';
+const tr = obj => (obj && (obj[LANG] || obj.en || obj.de)) || '';
 const fmt = (s, vals) => s.replace(/\{(\w+)\}/g, (m, k) => vals[k]);
 
 // --- Partner mode: /vermietung (or ?p=vermietung) shows the rental-company version ---
@@ -296,6 +296,52 @@ const zoneLayers = EXIT_ZONES.map(z => {
 
   return { z, layer, marker: zoneMarker };
 });
+
+// --- Closed river section past Eichholz down to Schwellenmätteli weir ---
+const DANGER_POLYGON = [
+  // North side
+  [46.94467, 7.44552], [46.94480, 7.44565], [46.94491, 7.44575], [46.94505, 7.44585],
+  [46.94527, 7.44597], [46.94535, 7.44603], [46.94551, 7.44621], [46.94555, 7.44636],
+  [46.94561, 7.44653], [46.94570, 7.44658], [46.94574, 7.44686], [46.94579, 7.44712],
+  [46.94586, 7.44740], [46.94589, 7.44765], [46.94593, 7.44795], [46.94594, 7.44832],
+  [46.94595, 7.44841], [46.94596, 7.44873], [46.94596, 7.44901], [46.94596, 7.44912],
+  [46.94596, 7.44931], [46.94596, 7.44955], [46.94597, 7.44984], [46.94597, 7.45007],
+  [46.94597, 7.45037], [46.94597, 7.45062], [46.94596, 7.45099], [46.94598, 7.45136],
+  [46.94599, 7.45182], [46.94599, 7.45211], [46.94597, 7.45231], [46.94601, 7.45269],
+  [46.94605, 7.45313], [46.94608, 7.45344], [46.94613, 7.45375], [46.94618, 7.45412],
+  [46.94624, 7.45446], [46.94630, 7.45477], [46.94634, 7.45508], [46.94642, 7.45544],
+  [46.94646, 7.45563], [46.94650, 7.45569],
+  // South side
+  [46.94564, 7.45603], [46.94547, 7.45550], [46.94541, 7.45536], [46.94531, 7.45513],
+  [46.94520, 7.45487], [46.94508, 7.45472], [46.94486, 7.45426], [46.94475, 7.45404],
+  [46.94468, 7.45374], [46.94466, 7.45354], [46.94472, 7.45315], [46.94467, 7.45300],
+  [46.94467, 7.45261], [46.94470, 7.45227], [46.94473, 7.45199], [46.94480, 7.45166],
+  [46.94488, 7.45125], [46.94495, 7.45086], [46.94501, 7.45049], [46.94515, 7.45022],
+  [46.94530, 7.45002], [46.94552, 7.44984], [46.94558, 7.44969], [46.94561, 7.44956],
+  [46.94561, 7.44926], [46.94561, 7.44905], [46.94562, 7.44886], [46.94563, 7.44864],
+  [46.94563, 7.44847], [46.94558, 7.44816], [46.94555, 7.44804], [46.94548, 7.44786],
+  [46.94544, 7.44771], [46.94536, 7.44757], [46.94527, 7.44734], [46.94522, 7.44716],
+  [46.94509, 7.44686], [46.94502, 7.44673], [46.94493, 7.44655], [46.94481, 7.44644],
+  [46.94471, 7.44636], [46.94460, 7.44630], [46.94451, 7.44625], [46.94443, 7.44619]
+];
+
+const dangerCorridor = L.polygon(DANGER_POLYGON, {
+  color: '#dc2626',
+  weight: 2,
+  dashArray: '6 5',
+  opacity: 0.9,
+  fillColor: '#ef4444',
+  fillOpacity: 0.35,
+  smoothFactor: 1,
+  interactive: true
+}).addTo(map);
+
+const weirPopupContent = () =>
+  `<div class="popup-title weir"><span class="popup-ic weir">${ICONS.weir}</span>${tr(SCHWELLE.name)}</div>` +
+  `<img class="popup-img" src="img/schwelle.jpg" alt="">` +
+  `<div>${tr(SCHWELLE.desc)}</div>`;
+
+dangerCorridor.bindPopup(weirPopupContent, { maxWidth: 280, autoPan: false });
 
 // --- START / ENDE labels at the trip endpoints (pill style, see .route-label) ---
 function routeLabel(p) {
@@ -786,15 +832,90 @@ if (PARTNER) {
 }
 
 // --- Language switcher: re-render every translated surface ---
+const langMenu = document.getElementById('lang-menu');
+const langToggleBtn = document.getElementById('lang-toggle-btn');
+const langFlagEl = document.getElementById('lang-curr-flag');
+const langLabelEl = document.getElementById('lang-curr-label');
+
+function openLangMenu() {
+  if (!langMenu) return;
+  langMenu.classList.remove('hidden');
+  if (langToggleBtn) langToggleBtn.setAttribute('aria-expanded', 'true');
+}
+
+function closeLangMenu() {
+  if (!langMenu) return;
+  langMenu.classList.add('hidden');
+  if (langToggleBtn) langToggleBtn.setAttribute('aria-expanded', 'false');
+}
+
+if (langMenu && typeof LANG_INFO !== 'undefined') {
+  langMenu.innerHTML = LANGS.map(code => {
+    const info = LANG_INFO[code] || { flag: '', name: code.toUpperCase(), code: code.toUpperCase() };
+    return `<button type="button" class="lang-option" role="option" data-lang="${code}">
+      <span class="lang-option-flag">${info.flag}</span>
+      <span class="lang-option-name">${info.name}</span>
+      <svg class="lang-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </button>`;
+  }).join('');
+
+  langMenu.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyLang(btn.dataset.lang);
+      closeLangMenu();
+    });
+  });
+}
+
+if (langToggleBtn) {
+  langToggleBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isClosed = !langMenu || langMenu.classList.contains('hidden');
+    if (isClosed) openLangMenu();
+    else closeLangMenu();
+  });
+}
+
+document.addEventListener('click', e => {
+  if (langMenu && !langMenu.classList.contains('hidden')) {
+    if (!langMenu.contains(e.target) && !langToggleBtn.contains(e.target)) {
+      closeLangMenu();
+    }
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && langMenu && !langMenu.classList.contains('hidden')) {
+    closeLangMenu();
+    if (langToggleBtn) langToggleBtn.focus();
+  }
+});
+
 function applyLang(lang) {
   LANG = lang;
   try { localStorage.setItem('aare-lang', lang); } catch (e) { /* private mode */ }
   document.documentElement.lang = lang;
 
+  // Update language toggle button and dropdown active items
+  const info = (typeof LANG_INFO !== 'undefined' && LANG_INFO[lang]) || { flag: '', name: lang.toUpperCase(), code: lang.toUpperCase() };
+  if (langFlagEl) langFlagEl.innerHTML = info.flag;
+  if (langLabelEl) langLabelEl.textContent = info.code;
+
+  if (langMenu) {
+    langMenu.querySelectorAll('.lang-option').forEach(b => {
+      const isActive = b.dataset.lang === lang;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
+
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   // Permission modal steps contain <strong> tags — use innerHTML for those.
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
-  if (PARTNER) document.querySelector('[data-i18n="subtitle"]').textContent = t('subtitlePartner');
+  const subEl = document.querySelector('[data-i18n="subtitle"]');
+  if (PARTNER && subEl) subEl.textContent = t('subtitlePartner');
   renderSiteAlert();
   document.getElementById('stats').title = t('statsTitle');
   document.getElementById('disclaimer').innerHTML = t('disclaimer');
@@ -812,17 +933,11 @@ function applyLang(lang) {
     layer.setPopupContent(zonePopup(z));
     marker.setPopupContent(zonePopup(z));
   });
+  if (typeof dangerCorridor !== 'undefined' && dangerCorridor) dangerCorridor.setPopupContent(weirPopupContent());
   updateRouteLabels();
   if (watching && lastFix) updateProgress(lastFix[0], lastFix[1]);
-
-  document.querySelectorAll('#lang-switch button').forEach(b =>
-    b.classList.toggle('active', b.dataset.lang === lang)
-  );
 }
 
-document.querySelectorAll('#lang-switch button').forEach(b =>
-  b.addEventListener('click', () => applyLang(b.dataset.lang))
-);
 applyLang(LANG);
 
 // Show the locate button hint on first visit (previously gated by the intro splash)
@@ -834,3 +949,12 @@ try {
     }, 1500);
   }
 } catch(e) {}
+
+// Register Service Worker for offline PWA capabilities
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => {
+      console.warn('PWA: Service Worker registration failed:', err);
+    });
+  });
+}
