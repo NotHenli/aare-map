@@ -967,3 +967,6 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+// Developer tool: Click on the map to log coordinates to the console (useful for drawing custom zones)
+map.on('click', e => console.log(`[${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}],`));
