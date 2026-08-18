@@ -94,7 +94,7 @@ const RIVER_TRIMMED = {
 
 // Main route: white outline underneath, then blue on top
 L.geoJSON(RIVER_TRIMMED, { style: { color: '#ffffff', weight: 8, opacity: 0.85 } }).addTo(map);
-const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#3ec1ff', weight: 4.5, opacity: 0.95 } }).addTo(map);
+const riverLine = L.geoJSON(RIVER_TRIMMED, { style: { color: '#00B6AC', weight: 4.5, opacity: 0.95 } }).addTo(map);
 // --- Restrict view to the relevant area: no panning away, no zooming out past the route ---
 const routeBounds = riverLine.getBounds();
 map.fitBounds(routeBounds.pad(0.06)); // small margin so endpoint labels stay on screen
