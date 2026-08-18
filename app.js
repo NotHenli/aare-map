@@ -375,6 +375,15 @@ function updateMarkerVisibility() {
     if (show && !map.hasLayer(m)) m.addTo(map);
     else if (!show && map.hasLayer(m)) m.remove();
   });
+
+  // Toggle the red danger polygon visibility (appears together with the warning icon)
+  if (typeof dangerCorridor !== 'undefined') {
+    if (z >= 13 && !map.hasLayer(dangerCorridor)) {
+      dangerCorridor.addTo(map);
+    } else if (z < 13 && map.hasLayer(dangerCorridor)) {
+      dangerCorridor.remove();
+    }
+  }
 }
 map.on('zoomend', updateMarkerVisibility);
 updateMarkerVisibility();
