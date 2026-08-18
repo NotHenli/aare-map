@@ -336,6 +336,36 @@ const dangerCorridor = L.polygon(DANGER_POLYGON, {
   interactive: true
 }).addTo(map);
 
+const DANGER_POLYGON_2 = [
+  // Top side
+  [46.90537, 7.52166], [46.90570, 7.52166], [46.90596, 7.52147],
+  [46.90617, 7.52113], [46.90637, 7.52059], [46.90662, 7.52033], [46.90694, 7.51997],
+  [46.90728, 7.51982], [46.90749, 7.51952], [46.90771, 7.51917], [46.90776, 7.51894],
+  [46.90803, 7.51864], [46.90818, 7.51847], [46.90828, 7.51817], [46.90840, 7.51802],
+  [46.90848, 7.51780], [46.90863, 7.51759], [46.90881, 7.51744], [46.90895, 7.51724],
+  [46.90904, 7.51707], [46.90910, 7.51688], [46.90916, 7.51671], [46.90917, 7.51651],
+  [46.90919, 7.51628], [46.90919, 7.51600], [46.90914, 7.51572], [46.90900, 7.51521],
+  [46.90891, 7.51497], [46.90884, 7.51469], [46.90878, 7.51448],
+  // Bottom side (reversed)
+  [46.90854, 7.51493], [46.90861, 7.51501], [46.90873, 7.51529], [46.90885, 7.51566],
+  [46.90895, 7.51585], [46.90901, 7.51632], [46.90892, 7.51664], [46.90822, 7.51797],
+  [46.90815, 7.51817], [46.90790, 7.51855], [46.90752, 7.51892], [46.90743, 7.51915],
+  [46.90740, 7.51930], [46.90725, 7.51941], [46.90675, 7.51986], [46.90658, 7.52001],
+  [46.90646, 7.52025], [46.90617, 7.52070], [46.90602, 7.52104], [46.90584, 7.52119],
+  [46.90555, 7.52113]
+];
+
+const dangerCorridor2 = L.polygon(DANGER_POLYGON_2, {
+  color: '#dc2626',
+  weight: 2,
+  dashArray: '6 5',
+  opacity: 0.9,
+  fillColor: '#ef4444',
+  fillOpacity: 0.35,
+  smoothFactor: 1,
+  interactive: false // No popup for this zone currently
+}).addTo(map);
+
 const weirPopupContent = () =>
   `<div class="popup-title weir"><span class="popup-ic weir">${ICONS.weir}</span>${tr(SCHWELLE.name)}</div>` +
   `<img class="popup-img" src="img/schwelle.jpg" alt="">` +
@@ -378,10 +408,12 @@ function updateMarkerVisibility() {
 
   // Toggle the red danger polygon visibility (appears together with the warning icon)
   if (typeof dangerCorridor !== 'undefined') {
-    if (z >= 13 && !map.hasLayer(dangerCorridor)) {
-      dangerCorridor.addTo(map);
-    } else if (z < 13 && map.hasLayer(dangerCorridor)) {
-      dangerCorridor.remove();
+    if (z >= 13) {
+      if (!map.hasLayer(dangerCorridor)) dangerCorridor.addTo(map);
+      if (!map.hasLayer(dangerCorridor2)) dangerCorridor2.addTo(map);
+    } else {
+      if (map.hasLayer(dangerCorridor)) dangerCorridor.remove();
+      if (map.hasLayer(dangerCorridor2)) dangerCorridor2.remove();
     }
   }
 }
