@@ -52,7 +52,8 @@ const MESSAGES = {
     permStep4: 'Komme zurück und tippe erneut auf den Standort-Pfeil',
     permSettings: 'Einstellungen öffnen ↗',
     permClose: 'Schliessen',
-    disclaimer: 'Keine Gewähr – offizielle <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Standort bleibt auf dem Gerät · Notfall <strong>112</strong>'
+    disclaimer: 'Keine Gewähr – offizielle <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Standort bleibt auf dem Gerät · Notfall <strong>112</strong>',
+    beerHint: 'Spendier uns es Bier 🍻'
   },
   en: {
     subtitle: 'River float · Thun → Bern',
@@ -91,7 +92,8 @@ const MESSAGES = {
     permStep4: 'Come back here and tap the location arrow again',
     permSettings: 'Open Settings ↗',
     permClose: 'Close',
-    disclaimer: 'No guarantee – follow the official <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG Aare map</a> · Your location stays on your device · Emergency <strong>112</strong>'
+    disclaimer: 'No guarantee – follow the official <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG Aare map</a> · Your location stays on your device · Emergency <strong>112</strong>',
+    beerHint: 'Buy us a beer 🍻'
   },
   fr: {
     subtitle: 'Descente en bateau · Thoune → Berne',
@@ -130,6 +132,7 @@ const MESSAGES = {
     permStep4: 'Revenez ici et appuyez à nouveau sur la flèche de localisation',
     permSettings: 'Ouvrir les réglages ↗',
     permClose: 'Fermer',
+    beerHint: 'Offre-nous une bière 🍻',
     disclaimer: 'Sans garantie – consultez la <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">carte officielle SSS de l’Aar</a> · Votre position reste sur l’appareil · Urgence <strong>112</strong>'
   },
   it: {
@@ -169,6 +172,7 @@ const MESSAGES = {
     permStep4: 'Torna qui e tocca di nuovo la freccia della posizione',
     permSettings: 'Apri Impostazioni ↗',
     permClose: 'Chiudi',
+    beerHint: 'Offrici una birra 🍻',
     disclaimer: 'Senza garanzia – consultare la <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">mappa ufficiale SSS dell’Aare</a> · Posizione salvata solo sul dispositivo · Emergenze <strong>112</strong>'
   },
   es: {
@@ -208,6 +212,7 @@ const MESSAGES = {
     permStep4: 'Vuelve aquí y pulsa de nuevo la flecha de ubicación',
     permSettings: 'Abrir ajustes ↗',
     permClose: 'Cerrar',
+    beerHint: 'Invítanos a una birra 🍻',
     disclaimer: 'Sin garantía – consulte el <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">mapa oficial de la SSS del río Aare</a> · La ubicación permanece en el dispositivo · Emergencias <strong>112</strong>'
   },
   nl: {
@@ -247,6 +252,7 @@ const MESSAGES = {
     permStep4: 'Kom terug en tik opnieuw op de locatiepijl',
     permSettings: 'Instellingen openen ↗',
     permClose: 'Sluiten',
+    beerHint: 'Trakteer ons op een biertje 🍻',
     disclaimer: 'Geen garantie – bekijk de officiële <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekaart</a> · Locatie blijft op uw apparaat · Noodgeval <strong>112</strong>'
   },
   pt: {
@@ -286,6 +292,7 @@ const MESSAGES = {
     permStep4: 'Volte aqui e toque na seta de localização novamente',
     permSettings: 'Abrir Ajustes ↗',
     permClose: 'Fechar',
+    beerHint: 'Paga-nos uma cerveja 🍻',
     disclaimer: 'Sem garantia – consulte o <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">mapa oficial SLRG do rio Aare</a> · Localização permanece no dispositivo · Emergência <strong>112</strong>'
   },
   zh: {
@@ -325,6 +332,7 @@ const MESSAGES = {
     permStep4: '返回此处并重新点击定位箭头',
     permSettings: '打开设置 ↗',
     permClose: '关闭',
+    beerHint: '请我们喝杯酒 🍻',
     disclaimer: '仅供参考 – 请参考官方 <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG 阿勒河地图</a> · 位置信息仅保留在本地设备 · 紧急求助 <strong>112</strong>'
   },
   ja: {
@@ -364,6 +372,7 @@ const MESSAGES = {
     permStep4: 'ここに戻り、もう一度位置アイコンをタップ',
     permSettings: '設定を開く ↗',
     permClose: '閉じる',
+    beerHint: 'ビール一杯おごって 🍻',
     disclaimer: '免責事項 – 公式 <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG アーレ川マップ</a> をご確認ください · 位置情報は端末内のみで処理 · 緊急連絡先 <strong>112</strong>'
   },
   ar: {
@@ -403,6 +412,7 @@ const MESSAGES = {
     permStep4: 'عد إلى هنا واضغط على سهم الموقع مجدداً',
     permSettings: 'فتح الإعدادات ↗',
     permClose: 'إغلاق',
+    beerHint: 'ادعمنا ببيرة 🍻',
     disclaimer: 'بدون ضمان – يرجى مراجعة <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">خريطة SLRG الرسمية لنهر الآر</a> · الموقع يظل على جهازك · الطوارئ <strong>112</strong>'
   }
 };

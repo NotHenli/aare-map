@@ -394,6 +394,60 @@ html, body {
   30% { transform: rotate(0deg); }
 }
 
+/* ---------- Beer Hint Bubble ---------- */
+.beer-hint-bubble {
+  position: fixed;
+  z-index: 1100;
+  left: 64px;
+  bottom: calc(158px + var(--sab));
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.beer-hint-bubble::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid var(--glass-border);
+}
+
+.beer-hint-bubble::after {
+  content: '';
+  position: absolute;
+  left: -4.5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid var(--glass);
+}
+
+.beer-hint-bubble.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* Reset-view pill: appears once the user zooms in on a POI */
 #reset-btn {
   position: fixed;

@@ -977,6 +977,9 @@ function applyLang(lang) {
   if (typeof dangerCorridor !== 'undefined' && dangerCorridor) dangerCorridor.setPopupContent(weirPopupContent());
   updateRouteLabels();
   if (watching && lastFix) updateProgress(lastFix[0], lastFix[1]);
+  // Update beer hint bubble text if it exists
+  const bh = document.getElementById('beer-hint-bubble');
+  if (bh) bh.textContent = t('beerHint');
 }
 
 applyLang(LANG);
@@ -998,6 +1001,39 @@ if ('serviceWorker' in navigator) {
       console.warn('PWA: Service Worker registration failed:', err);
     });
   });
+}
+
+// --- Beer hint bubble: subtle nudge near the beer button ---
+const beerBubble = document.getElementById('beer-hint-bubble');
+let beerBubbleTimer, beerBubbleInterval;
+
+function showBeerHint() {
+  if (!beerBubble) return;
+  beerBubble.textContent = t('beerHint');
+  beerBubble.classList.remove('hidden');
+  // Trigger reflow so the transition plays
+  void beerBubble.offsetWidth;
+  beerBubble.classList.add('show');
+  clearTimeout(beerBubbleTimer);
+  beerBubbleTimer = setTimeout(() => {
+    beerBubble.classList.remove('show');
+    // Wait for fade-out transition before hiding
+    setTimeout(() => beerBubble.classList.add('hidden'), 400);
+  }, 5000);
+}
+
+// First show after 3s, then every 5 minutes
+setTimeout(showBeerHint, 3000);
+beerBubbleInterval = setInterval(showBeerHint, 5 * 60 * 1000);
+
+// Tap anywhere dismisses immediately
+if (beerBubble) {
+  document.addEventListener('click', () => {
+    if (beerBubble.classList.contains('show')) {
+      beerBubble.classList.remove('show');
+      setTimeout(() => beerBubble.classList.add('hidden'), 400);
+    }
+  }, { passive: true });
 }
 
 // Developer tool: Click on the map to log coordinates to the console (useful for drawing custom zones)
