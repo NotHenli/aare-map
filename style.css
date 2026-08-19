@@ -353,6 +353,47 @@ html, body {
 }
 #list-btn svg { width: 18px; height: 18px; }
 
+/* ---------- Beer Button ---------- */
+#beer-btn {
+  position: fixed;
+  z-index: 1100;
+  left: 12px;
+  bottom: calc(154px + var(--sab));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#beer-btn:active {
+  transform: scale(0.94);
+  background: #fff;
+}
+
+.beer-icon {
+  font-size: 20px;
+  line-height: 1;
+  transform-origin: bottom center;
+  animation: beer-shake 3s ease-in-out infinite;
+}
+
+@keyframes beer-shake {
+  0%, 100% { transform: rotate(0deg); }
+  5%, 15%, 25% { transform: rotate(-10deg); }
+  10%, 20% { transform: rotate(10deg); }
+  30% { transform: rotate(0deg); }
+}
+
 /* Reset-view pill: appears once the user zooms in on a POI */
 #reset-btn {
   position: fixed;
