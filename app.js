@@ -812,12 +812,19 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePermModa
 //   < 115 ≈ 4 h · 115–130 ≈ 3¾ h · 130–150 ≈ 3½ h · 150–175 ≈ 3¼ h · 175–200 ≈ 3 h · ≥ 200 < 3 h
 function floatTime(flow) {
   if (flow == null) return null;
-  if (flow >= 200) { floatHours = 2.75; return '< 3 h'; }
-  if (flow >= 175) { floatHours = 3; return '≈ 3 h'; }
-  if (flow >= 150) { floatHours = 3.25; return '≈ 3¼ h'; }
-  if (flow >= 130) { floatHours = 3.5; return '≈ 3½ h'; }
-  if (flow >= 115) { floatHours = 3.75; return '≈ 3¾ h'; }
-  floatHours = 4; return '≈ 4 h';
+  let mins;
+  if (flow >= 200) { mins = 165; }       // 2h 45m
+  else if (flow >= 175) { mins = 180; }  // 3h 0m
+  else if (flow >= 150) { mins = 195; }  // 3h 15m
+  else if (flow >= 130) { mins = 210; }  // 3h 30m
+  else if (flow >= 115) { mins = 225; }  // 3h 45m
+  else { mins = 240; }                   // 4h 0m
+  // Round to nearest 15 minutes
+  mins = Math.round(mins / 15) * 15;
+  floatHours = mins / 60;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? `≈ ${h}h ${m}m` : `≈ ${h}h`;
 }
 
 function setStat(id, text, warn) {
@@ -832,15 +839,15 @@ fetch('/_proxy/aare')
     const t = data.stations.thun.water;
     const b = data.stations.bern.water;
 
-    if (b.water_temperature_c != null) setStat('stat-temp', `${b.water_temperature_c} °C`);
-    if (t.flow_m3s != null) setStat('stat-flow-thun', `${t.flow_m3s} m³/s`);
+    if (b.water_temperature_c != null) setStat('stat-temp', `${b.water_temperature_c.toFixed(1)} °C`);
+    if (t.flow_m3s != null) setStat('stat-flow-thun', `${Math.round(t.flow_m3s)} m³/s`);
     // City of Bern advises caution for boaters above ~220 m³/s
-    if (b.flow_m3s != null) setStat('stat-flow-bern', `${b.flow_m3s} m³/s`, b.flow_m3s >= 220);
+    if (b.flow_m3s != null) setStat('stat-flow-bern', `${Math.round(b.flow_m3s)} m³/s`, b.flow_m3s >= 220);
 
     const time = floatTime(t.flow_m3s != null ? t.flow_m3s : b.flow_m3s);
     if (time) setStat('stat-time', time);
     if (b.flow_m3s != null && b.flow_m3s >= 220) {
-      toast(fmt(MESSAGES[LANG].highFlow, { flow: b.flow_m3s }));
+      toast(fmt(MESSAGES[LANG].highFlow, { flow: Math.round(b.flow_m3s) }));
     }
   })
   .catch(() => { /* live data is optional; map works without it */ });
