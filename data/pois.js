@@ -23,7 +23,9 @@ const POIS = [
       pt: 'Aarebootsvermietung',
       zh: 'Aarebootsvermietung 租船处',
       ja: 'Aarebootsvermietung（ボートレンタル）',
-      ar: 'Aarebootsvermietung لتأجير القوارب'
+      ar: 'Aarebootsvermietung لتأجير القوارب',
+      uk: 'Aarebootsvermietung (прокат човнів)',
+      ru: 'Aarebootsvermietung (прокат лодок)'
     },
     desc: {
       de: 'Miete ein Boot bei der Aarebootsvermietung – Fahrt von Schwäbis bis nach Bern (Eichholz). Schwimmwesten, Paddel und wasserdichte Tonne inklusive. Aarebootsvermietung-Boote enden in Eichholz.',
@@ -35,7 +37,9 @@ const POIS = [
       pt: 'Alugue um barco na Aarebootsvermietung – trajeto de Schwäbis até Berna (Eichholz). Coletes salva-vidas, remos e barril estanque inclusos. Os barcos alugados terminam em Eichholz.',
       zh: '在 Aarebootsvermietung 租船 – 从 Schwäbis 漂流至伯尔尼（Eichholz）。包含救生衣、船桨和防水桶。租船行程在 Eichholz 结束。',
       ja: 'Aarebootsvermietung でボートをレンタル – シュヴェービス（Schwäbis）からベルン（Eichholz）まで。ライフジャケット、パドル、防水バレル付き。レンタルボートはアイヒホルツで返却。',
-      ar: 'استأجر قارباً من Aarebootsvermietung – رحلة من شفيبيس إلى برن (آيخهولتس). سترات النجاة والمجاديف والبرميل المقاوم للماء مشمولة. تنتهي القوارب في آيخهولتس.'
+      ar: 'استأجر قارباً من Aarebootsvermietung – رحلة من شفيبيس إلى برن (آيخهولتس). سترات النجاة والمجاديف والبرميل المقاوم للماء مشمولة. تنتهي القوارب في آيخهولتس.',
+      uk: 'Орендуйте човен у Aarebootsvermietung – сплав від Швебіс до Берна (Eichholz). Рятувальні жилети, весла та водонепроникна бочка включені. Човни повертаються в Eichholz.',
+      ru: 'Арендуйте лодку в Aarebootsvermietung – сплав от Швебис до Берна (Eichholz). Спасательные жилеты, вёсла и водонепроницаемая бочка включены. Лодки возвращаются в Eichholz.'
     }
   },
   {
@@ -52,7 +56,9 @@ const POIS = [
       pt: 'Entrada Schwäbis',
       zh: 'Schwäbis 下水点',
       ja: 'シュヴェービス乗艇地点 (Schwäbis)',
-      ar: 'نقطة دخول شفيبيس'
+      ar: 'نقطة دخول شفيبيس',
+      uk: 'Старт Швебіс (Schwäbis)',
+      ru: 'Старт Швебис (Schwäbis)'
     },
     desc: {
       de: 'Offizielle und beliebteste Einwasserungsstelle.',
@@ -64,7 +70,9 @@ const POIS = [
       pt: 'Ponto de entrada oficial e mais popular para barcos.',
       zh: '官方且最受欢迎的下水起点。',
       ja: '公式で最も人気のあるボートエントリー地点。',
-      ar: 'نقطة الانطلاق الرسمية والأكثر شعبية للقوارب.'
+      ar: 'نقطة الانطلاق الرسمية والأكثر شعبية للقوارب.',
+      uk: 'Офіційне та найпопулярніше місце спуску на воду.',
+      ru: 'Официальное и самое популярное место спуска на воду.'
     }
   },
   {
@@ -82,7 +90,9 @@ const POIS = [
       pt: 'Onda de Uttigen (ponte ferroviária)',
       zh: 'Uttigen 浪区（铁路桥）',
       ja: 'ウッティゲンの波 / Uttigenwelle（鉄道橋）',
-      ar: 'موجة أوتيغن (جسر القطار)'
+      ar: 'موجة أوتيغن (جسر القطار)',
+      uk: 'Хвиля Утігена (залізничний міст)',
+      ru: 'Волна Утигена (железнодорожный мост)'
     },
     desc: {
       de: 'Starke stehende Welle in der Flussmitte unter der Eisenbahnbrücke. RECHTS halten, ca. 5 m vom Ufer entfernt, und das Boot gerade halten. Bitte im Boot bleiben.',
@@ -94,7 +104,9 @@ const POIS = [
       pt: 'Forte onda estacionária no meio do rio sob a ponte do trem. Mantenha-se à DIREITA, a cerca de 5 m da margem, e mantenha o barco reto. Fique dentro do barco.',
       zh: '铁路桥下河流中央有强烈的驻波。请靠右行驶（距右岸约 5 米），保持船身笔直，并切勿离开船只。',
       ja: '鉄道橋下の川中央に強い定常波。右側（岸から約5m）を進み、ボートをまっすぐに保ってください。ボートから降りないでください。',
-      ar: 'موجة قوية في منتصف النهر تحت جسر القطار. الزم اليمين (حوالي 5 أمتار من الضفة) وحافظ على استقامة القارب. ابق داخل القارب.'
+      ar: 'موجة قوية في منتصف النهر تحت جسر القطار. الزم اليمين (حوالي 5 أمتار من الضفة) وحافظ على استقامة القارب. ابق داخل القارب.',
+      uk: 'Сильна стояча хвиля посеред річки під залізничним мостом. Тримайтеся ПРАВОРУЧ, приблизно 5 м від берега, тримайте човен рівно. Залишайтеся у човні.',
+      ru: 'Сильная стоячая волна посреди реки под железнодорожным мостом. Держитесь ПРАВЕЕ, примерно 5 м от берега, держите лодку прямо. Оставайтесь в лодке.'
     }
   },
   {
@@ -111,7 +123,9 @@ const POIS = [
       pt: 'Rubigen – Wyderwasser',
       zh: 'Rubigen – Wyderwasser',
       ja: 'ルビゲン – Wyderwasser',
-      ar: 'روبيجين – فايدرفاسر'
+      ar: 'روبيجين – فايدرفاسر',
+      uk: 'Рубіген – Wyderwasser',
+      ru: 'Рубиген – Wyderwasser'
     },
     desc: {
       de: 'Ausstieg RECHTS, ca. 100 m nach den Brückenpfeilern. Restaurant Campagna liegt auf der LINKEN Seite. Wyderwasser-Beizli direkt am Strand rechts. Grillplatz für Gruppen mit Reservation vorhanden.',
@@ -123,7 +137,9 @@ const POIS = [
       pt: 'Saída à DIREITA, cerca de 100 m após os pilares da ponte. O Restaurant Campagna fica na margem ESQUERDA. Bar de praia Wyderwasser à direita. Churrasqueira para grupos com reserva.',
       zh: '右侧上岸（桥墩后约 100 米）。Campagna 餐厅位于左岸。Wyderwasser 沙滩酒吧位于右侧。提供团体预约烧烤区。',
       ja: '橋脚を通過後約100m、右側から上陸可能。左岸に Restaurant Campagna、右岸ビーチに Wyderwasser バーがあります（要予約のBBQエリアあり）。',
-      ar: 'الخروج إلى اليمين بعد أعمدة الجسر بـ 100 متر. مطعم كامبانيا على الضفة اليسرى وبار فايدرفاسر الشاطئي على اليمين. تتوفر منطقة شواء للمجموعات بالحجز.'
+      ar: 'الخروج إلى اليمين بعد أعمدة الجسر بـ 100 متر. مطعم كامبانيا على الضفة اليسرى وبار فايدرفاسر الشاطئي على اليمين. تتوفر منطقة شواء للمجموعات بالحجز.',
+      uk: 'Вихід ПРАВОРУЧ, приблизно 100 м після опор мосту. Ресторан Campagna на ЛІВОМУ березі. Пляжний бар Wyderwasser на правому березі. Зона для барбекю для груп за попереднім бронюванням.',
+      ru: 'Выход НАПРАВО, примерно 100 м после опор моста. Ресторан Campagna на ЛЕВОМ берегу. Пляжный бар Wyderwasser на правом берегу. Зона для барбекю для групп по предварительному бронированию.'
     }
   },
   {
@@ -141,7 +157,9 @@ const POIS = [
       pt: 'Auguetbrücke (ponte de madeira)',
       zh: 'Auguetbrücke（木桥）',
       ja: 'アウグエット橋 / Auguetbrücke（木造橋）',
-      ar: 'جسر أوغويت (جسر خشبي)'
+      ar: 'جسر أوغويت (جسر خشبي)',
+      uk: 'Міст Аугует (дерев\u0027яний міст)',
+      ru: 'Мост Аугует (деревянный мост)'
     },
     desc: {
       de: 'Holzbrücke mit drei Pfeilern im Fluss – links oder rechts zwischen den Pfeilern durchfahren. Boot gerade halten, nicht in Brückennähe schwimmen.',
@@ -153,7 +171,9 @@ const POIS = [
       pt: 'Ponte de madeira com três pilares – passe entre os pilares pela esquerda ou direita. Mantenha o barco reto e não nade perto da ponte.',
       zh: '河中有三个桥墩的木桥 – 请从左侧或右侧桥墩之间穿过。保持船身笔直，切勿在桥梁附近游泳。',
       ja: '川の中に3本の橋脚がある木造橋。左右の橋脚の間を通過してください。ボートをまっすぐ保ち、橋の近くで泳がないでください。',
-      ar: 'جسر خشبي به 3 أعمدة في النهر – اعبر بين الأعمدة يساراً أو يميناً. حافظ على استقامة القارب ولا تسبح قرب الجسر.'
+      ar: 'جسر خشبي به 3 أعمدة في النهر – اعبر بين الأعمدة يساراً أو يميناً. حافظ على استقامة القارب ولا تسبح قرب الجسر.',
+      uk: 'Дерев\'яний міст із трьома опорами у річці – проходьте між опорами зліва або справа. Тримайте човен рівно, не плавайте біля мосту.',
+      ru: 'Деревянный мост с тремя опорами в реке – проходите между опорами слева или справа. Держите лодку прямо, не плавайте рядом с мостом.'
     }
   },
   {
@@ -171,7 +191,9 @@ const POIS = [
       pt: 'Saída Eichholz',
       zh: 'Eichholz 上岸点',
       ja: 'アイヒホルツ降艇地点 (Eichholz)',
-      ar: 'نقطة خروج آيخهولتس'
+      ar: 'نقطة خروج آيخهولتس',
+      uk: 'Вихід Eichholz',
+      ru: 'Выход Eichholz'
     },
     desc: {
       de: 'Erster und einfachster Hauptausstieg in Bern: Ausstieg überall in der markierten Zone entlang des Campings Eichholz möglich. Für Aarebootsvermietung-Kunden ist dies der Ausstieg. Duschen, WC – Tram Nr. 9 fährt ins Stadtzentrum.',
@@ -183,7 +205,9 @@ const POIS = [
       pt: 'Primeira e principal saída em Berna: possível em qualquer ponto da zona demarcada ao longo do Camping Eichholz. Saída para clientes Aarebootsvermietung. Duchas, WC – bonde nº 9 até o centro.',
       zh: '伯尔尼首个也是最主要的主上岸点：沿 Camping Eichholz 露营地的标记区域均可上岸。租船客户在此上岸。配有淋浴、洗手间，9路有轨电车直达市中心。',
       ja: 'ベルン市内最初で最も簡単なメイン上陸地点。キャンプ場沿いのマークされたエリアで上陸可能。Aarebootsvermietung の返却地点。シャワー・トイレ完備、トラム9番で市内中心部へ。',
-      ar: 'نقطة الخروج الأولى والرئيسية في برن: الخروج متاح في كل المنطقة المحددة بجوار مخيم آيخهولتس. هذه نقطة خروج عملاء تأجير القوارب. تتوفر حمامات، والترام 9 ينقل إلى مركز المدينة.'
+      ar: 'نقطة الخروج الأولى والرئيسية في برن: الخروج متاح في كل المنطقة المحددة بجوار مخيم آيخهولتس. هذه نقطة خروج عملاء تأجير القوارب. تتوفر حمامات، والترام 9 ينقل إلى مركز المدينة.',
+      uk: 'Перший та найзручніший вихід у Берні: можна вийти будь-де в позначеній зоні вздовж кемпінгу Eichholz. Це вихід для орендованих човнів. Душові, туалети – трамвай №9 до центру міста.',
+      ru: 'Первый и самый удобный выход в Берне: можно выйти в любом месте отмеченной зоны вдоль кемпинга Eichholz. Это выход для арендованных лодок. Душевые, туалеты – трамвай №9 до центра города.'
     }
   },
 
@@ -203,7 +227,9 @@ const POIS = [
       pt: 'Devolução de barcos Eichholz',
       zh: 'Eichholz 还船点',
       ja: 'ボート返却場所 アイヒホルツ',
-      ar: 'تسليم القوارب في آيخهولتس'
+      ar: 'تسليم القوارب في آيخهولتس',
+      uk: 'Повернення човнів Eichholz',
+      ru: 'Возврат лодок Eichholz'
     },
     desc: {
       de: 'Rückgabeort für Aarebootsvermietung-Kunden: Boot hier ans Ufer bringen und dem Team übergeben. Der Ausstieg ist überall in der markierten Zone entlang des Campings möglich.',
@@ -215,7 +241,9 @@ const POIS = [
       pt: 'Ponto de devolução para clientes Aarebootsvermietung: traga o barco até a margem aqui e entregue à equipe. Saída possível em toda a extensão do camping.',
       zh: 'Aarebootsvermietung 客户还船处：请将船只靠岸并交还给工作人员。在露营地标记区域均可上岸。',
       ja: 'Aarebootsvermietung 利用者の返却地点: ここでボートを岸に寄せてスタッフに引き渡してください。キャンプ場沿いのゾーンならどこでも上陸可能です。',
-      ar: 'نقطة تسليم القوارب لعملاء التأجير: أحضر القارب إلى الضفة وسلمه للموظفين. الخروج متاح على طول منطقة المخيم.'
+      ar: 'نقطة تسليم القوارب لعملاء التأجير: أحضر القارب إلى الضفة وسلمه للموظفين. الخروج متاح على طول منطقة المخيم.',
+      uk: 'Місце повернення човнів: пригоніть човен до берега і передайте команді. Вихід можливий будь-де вздовж кемпінгу.',
+      ru: 'Место возврата лодок: причальте к берегу и передайте лодку команде. Выход возможен в любом месте вдоль кемпинга.'
     }
   },
 
@@ -234,7 +262,9 @@ const POIS = [
       pt: 'Represa Schwellenmätteli – PERIGO',
       zh: 'Schwellenmätteli 水坝 – 极度危险',
       ja: 'シュヴェレンメッテリ堰 – 危険',
-      ar: 'سد شفيلميتيلي – خطر'
+      ar: 'سد شفيلميتيلي – خطر',
+      uk: 'Гребля Швелленметтелі – СМЕРТЕЛЬНА НЕБЕЗПЕКА',
+      ru: 'Плотина Швелленмэттели – СМЕРТЕЛЬНАЯ ОПАСНОСТЬ'
     },
     desc: {
       de: 'Lebensgefahr! Wehr mit starker Walze. Gesperrte Zone für Schwimmer und Boote. Niemals weiterfahren – spätestens im Eichholz aussteigen.',
@@ -246,7 +276,9 @@ const POIS = [
       pt: 'Perigo mortal! Represa com refluxo perigoso. Zona proibida para banhistas e barcos. Nunca continue – saia o mais tardar em Eichholz.',
       zh: '致命危险！水坝处有巨大吸力和翻滚水流。严禁任何游泳者或船只进入。切勿继续前行 – 最迟必须在 Eichholz 上岸。',
       ja: '生命の危険！強い巻き込み水流がある堰。遊泳およびボート進入禁止エリア。決してこれ以上進まないでください。必ずアイヒホルツで上陸してください。',
-      ar: 'خطر الموت! سد ذو دوامات وتيارات شديدة الخطورة. منطقة محظورة على السباحين والقوارب. لا تتابع السير أبداً – اخرج في آيخهولتس على أبعد تقدير.'
+      ar: 'خطر الموت! سد ذو دوامات وتيارات شديدة الخطورة. منطقة محظورة على السباحين والقوارب. لا تتابع السير أبداً – اخرج في آيخهولتس على أبعد تقدير.',
+      uk: 'Смертельна небезпека! Гребля з потужним зворотним потоком. Заборонена зона для плавців та човнів. Ніколи не пливіть далі – виходьте не пізніше Eichholz.',
+      ru: 'Смертельная опасность! Плотина с мощным обратным потоком. Запрещённая зона для пловцов и лодок. Никогда не плывите дальше – выходите не позднее Eichholz.'
     }
   }
 ];
@@ -272,7 +304,9 @@ const EXIT_ZONES = [
       pt: 'Zona de saída Eichholz',
       zh: 'Eichholz 上岸区',
       ja: 'アイヒホルツ上陸エリア',
-      ar: 'منطقة خروج آيخهولتس'
+      ar: 'منطقة خروج آيخهولتس',
+      uk: 'Зона виходу Eichholz',
+      ru: 'Зона выхода Eichholz'
     },
     desc: {
       de: 'Ausstieg überall in dieser Zone entlang des Campings Eichholz möglich. Für Aarebootsvermietung-Kunden ist dies der Ausstieg.',
@@ -284,7 +318,9 @@ const EXIT_ZONES = [
       pt: 'Saída possível em qualquer ponto desta zona ao longo da margem do Camping Eichholz. Saída para clientes Aarebootsvermietung.',
       zh: '沿 Camping Eichholz 露营地河岸的此区域均可上岸。租船客户在此上岸。',
       ja: 'Camping Eichholz 沿いのこのゾーン内ならどこでも上陸可能。Aarebootsvermietung 利用者の降艇地点です。',
-      ar: 'الخروج متاح في أي مكان في هذه المنطقة على طول ضفة مخيم آيخهولتس. نقطة خروج عملاء التأجير.'
+      ar: 'الخروج متاح في أي مكان في هذه المنطقة على طول ضفة مخيم آيخهولتس. نقطة خروج عملاء التأجير.',
+      uk: 'Вихід можливий будь-де в цій зоні вздовж берега кемпінгу Eichholz. Це вихід для орендованих човнів.',
+      ru: 'Выход возможен в любом месте этой зоны вдоль берега кемпинга Eichholz. Это выход для арендованных лодок.'
     }
   }
 ];

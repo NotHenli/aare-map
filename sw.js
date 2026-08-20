@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aare-map-v1';
+const CACHE_NAME = 'aare-map-v2';
 
 // Essential structural files that must be cached immediately to guarantee offline loading
 const PRECACHE_ASSETS = [
@@ -10,8 +10,8 @@ const PRECACHE_ASSETS = [
   '/data/messages.js',
   '/data/river.js',
   '/data/pois.js',
-  '/vendor/leaflet.css',
-  '/vendor/leaflet.js',
+  '/vendor/leaflet/leaflet.css',
+  '/vendor/leaflet/leaflet.js',
   '/manifest.json'
 ];
 
@@ -40,6 +40,9 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  // Only handle http/https requests (chrome-extension:// etc. cannot be cached)
+  const url = new URL(event.request.url);
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   // Ignore requests to external APIs that shouldn't be cached (e.g. live temperature data)
   if (event.request.url.includes('aareguru.existenz.ch')) return;
 

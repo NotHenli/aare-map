@@ -6,7 +6,7 @@
   <!-- Everything is served from our own origin (Leaflet is self-hosted); the only
        remote endpoints are swisstopo map tiles and anonymous aare.guru live data.
        Geolocation stays on the device – no origin may receive or store it. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://wmts.geo.admin.ch; connect-src https://aareguru.existenz.ch; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://wmts.geo.admin.ch; connect-src 'self' https://aareguru.existenz.ch; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#0b1d2a">
   <link rel="preconnect" href="https://wmts.geo.admin.ch">
@@ -171,6 +171,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="img/icon-180.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Aare Map">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
@@ -411,49 +412,6 @@
   <script src="data/pois.js"></script>
   <script src="data/site.js"></script>
   <script src="app.js"></script>
-  <script>
-    // Legal modal open/close logic
-    (function () {
-      var overlay = document.querySelectorAll('.legal-modal');
-
-      function openModal(id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        el.querySelector('.legal-modal-close').focus();
-      }
-
-      function closeModal(el) {
-        el.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-
-      // Footer trigger buttons
-      document.querySelectorAll('.legal-link[data-modal]').forEach(function (btn) {
-        btn.addEventListener('click', function () { openModal(btn.getAttribute('data-modal')); });
-      });
-
-      // Close buttons inside each modal
-      document.querySelectorAll('.legal-modal-close').forEach(function (btn) {
-        btn.addEventListener('click', function () { closeModal(btn.closest('.legal-modal')); });
-      });
-
-      // Click on backdrop closes
-      overlay.forEach(function (modal) {
-        modal.addEventListener('click', function (e) {
-          if (e.target === modal) closeModal(modal);
-        });
-      });
-
-      // Escape key closes
-      document.addEventListener('keydown', function (e) {
-        if (e.key !== 'Escape') return;
-        overlay.forEach(function (modal) {
-          if (!modal.classList.contains('hidden')) closeModal(modal);
-        });
-      });
-    }());
-  </script>
 </body>
 </html>
+

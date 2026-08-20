@@ -1083,6 +1083,24 @@ html, body {
 .legal-modal-close svg { width: 15px; height: 15px; }
 
 @media (max-width: 700px) {
-  .disclaimer-left { display: none; }
-  .disclaimer-right { flex: 1; justify-content: center; }
+  #disclaimer {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 5px 12px calc(5px + var(--sab));
+    text-align: center;
+  }
+  .disclaimer-left {
+    order: 2;
+    white-space: normal;
+    overflow: visible;
+    font-size: 10px;
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+  .disclaimer-right {
+    order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

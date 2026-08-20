@@ -959,7 +959,7 @@ function applyLang(lang) {
   if (PARTNER && subEl) subEl.textContent = t('subtitlePartner');
   renderSiteAlert();
   document.getElementById('stats').title = t('statsTitle');
-  document.getElementById('disclaimer').innerHTML = t('disclaimer');
+  document.querySelector('#disclaimer .disclaimer-left').innerHTML = t('disclaimer');
   locateBtn.setAttribute('aria-label', t('locateAria'));
 
   SHOWN.forEach(p => {
@@ -1038,3 +1038,47 @@ if (beerBubble) {
 
 // Developer tool: Click on the map to log coordinates to the console (useful for drawing custom zones)
 map.on('click', e => console.log(`[${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}],`));
+
+// --- Legal modal open/close logic ---
+(function () {
+  var overlays = document.querySelectorAll('.legal-modal');
+
+  function openModal(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    var closeBtn = el.querySelector('.legal-modal-close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal(el) {
+    el.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  // Footer trigger buttons
+  document.querySelectorAll('.legal-link[data-modal]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openModal(btn.getAttribute('data-modal')); });
+  });
+
+  // Close buttons inside each modal
+  document.querySelectorAll('.legal-modal-close').forEach(function (btn) {
+    btn.addEventListener('click', function () { closeModal(btn.closest('.legal-modal')); });
+  });
+
+  // Click on backdrop closes
+  overlays.forEach(function (modal) {
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal(modal);
+    });
+  });
+
+  // Escape key closes
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    overlays.forEach(function (modal) {
+      if (!modal.classList.contains('hidden')) closeModal(modal);
+    });
+  });
+}());

@@ -1,5 +1,5 @@
 // UI strings for Aare Map – Multilingual support for Swiss tourism & river safety.
-const LANGS = ['de', 'en', 'fr', 'it', 'es', 'nl', 'pt', 'zh', 'ja', 'ar'];
+const LANGS = ['de', 'en', 'fr', 'it', 'es', 'nl', 'pt', 'zh', 'ja', 'ar', 'uk', 'ru'];
 
 const LANG_INFO = {
   de: { flag: '<svg viewBox="0 0 640 480" class="flag-icon"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#D00" d="M0 160h640v160H0z"/><path fill="#FFCE00" d="M0 320h640v160H0z"/></svg>', name: 'Deutsch', code: 'DE' },
@@ -11,7 +11,9 @@ const LANG_INFO = {
   pt: { flag: '<svg viewBox="0 0 600 400" class="flag-icon"><path fill="#046a38" d="M0 0h240v400H0z"/><path fill="#da291c" d="M240 0h360v400H240z"/><circle cx="240" cy="200" r="50" fill="#ffcd00"/><circle cx="240" cy="200" r="35" fill="#da291c"/><path fill="#fff" d="M230 188h20v24h-20z"/></svg>', name: 'Português', code: 'PT' },
   zh: { flag: '<svg viewBox="0 0 600 400" class="flag-icon"><path fill="#de2910" d="M0 0h600v400H0z"/><polygon fill="#ffde00" points="100,40 119,98 70,62 130,62 81,98"/><polygon fill="#ffde00" points="200,30 205,45 192,35 210,35 197,45"/><polygon fill="#ffde00" points="230,65 233,80 220,70 238,70 225,80"/><polygon fill="#ffde00" points="230,115 230,130 220,120 238,120 225,130"/><polygon fill="#ffde00" points="200,150 198,165 190,155 208,155 195,165"/></svg>', name: '中文', code: 'ZH' },
   ja: { flag: '<svg viewBox="0 0 600 400" class="flag-icon"><path fill="#fff" d="M0 0h600v400H0z"/><circle cx="300" cy="200" r="115" fill="#bc002d"/></svg>', name: '日本語', code: 'JA' },
-  ar: { flag: '<svg viewBox="0 0 600 400" class="flag-icon"><path fill="#006c35" d="M0 0h600v400H0z"/><path fill="#fff" d="M120 250h360v16H120z M440 240l36 18-36 18z M180 160c40-25 200-25 240 0-40 25-200 25-240 0z"/></svg>', name: 'العربية', code: 'AR' }
+  ar: { flag: '<svg viewBox="0 0 600 400" class="flag-icon"><path fill="#006c35" d="M0 0h600v400H0z"/><path fill="#fff" d="M120 250h360v16H120z M440 240l36 18-36 18z M180 160c40-25 200-25 240 0-40 25-200 25-240 0z"/></svg>', name: 'العربية', code: 'AR' },
+  uk: { flag: '<svg viewBox="0 0 640 480" class="flag-icon"><path fill="#005BBB" d="M0 0h640v240H0z"/><path fill="#FFD500" d="M0 240h640v240H0z"/></svg>', name: 'Українська', code: 'UK' },
+  ru: { flag: '<svg viewBox="0 0 640 480" class="flag-icon"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#0039A6" d="M0 160h640v160H0z"/><path fill="#D52B1E" d="M0 320h640v160H0z"/></svg>', name: 'Русский', code: 'RU' }
 };
 
 const MESSAGES = {
@@ -414,5 +416,85 @@ const MESSAGES = {
     permClose: 'إغلاق',
     beerHint: 'ادعمنا ببيرة 🍻',
     disclaimer: 'بدون ضمان – يرجى مراجعة <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">خريطة SLRG الرسمية لنهر الآر</a> · الموقع يظل على جهازك · الطوارئ <strong>112</strong>'
+  },
+  uk: {
+    subtitle: 'Сплав · Тун → Берн',
+    statsTitle: 'Дані наживо: aare.guru',
+    statTemp: 'Вода Берн',
+    statFlowThun: 'Витрата Тун',
+    statFlowBern: 'Витрата Берн',
+    statTime: 'Час сплаву',
+    listBtn: 'Маршрут',
+    resetBtn: 'Огляд',
+    panelTitle: 'Маршрут за течією',
+    legendEntry: 'Старт',
+    legendDanger: 'Небезпека',
+    legendExit: 'Вихід',
+    legendWeir: 'Закрито',
+    legendRental: 'Прокат',
+    website: 'Відкрити сайт ↗',
+    labelStart: 'СТАРТ',
+    labelEnd: 'ФІНІШ',
+    subtitlePartner: 'Сплав · Schwäbis → Eichholz',
+    progressMissedExit: '⚠️ Вихід пропущено – вийдіть не пізніше Eichholz!',
+    introStart: 'Відкрити карту',
+    introHintPartner: 'Офіційна карта маршруту',
+    progress: '🏁 {dest}: {km} км · прибл. {eta}',
+    progressDanger: '⛔ Eichholz пройдено – НЕГАЙНО виходьте, попереду гребля!',
+    hazardAhead: '⚠️ {name} через {m} м',
+    locError: 'Місцезнаходження недоступне – дозвольте доступ до геолокації у браузері.',
+    locateAria: 'Показати моє місцезнаходження',
+    locateHint: 'Показати моє місцезнаходження',
+    highFlow: '⚠️ Високий рівень води ({flow} м³/с у Берні) – сплав лише для досвідчених!',
+    permTitle: 'Увімкнути геолокацію',
+    permBody: 'Safari блокує доступ до вашого місцезнаходження. Як увімкнути:',
+    permStep1: 'Натисніть <strong>Відкрити налаштування</strong> нижче',
+    permStep2: 'Перейдіть до <strong>Налаштування → Конфіденційність → Служби геолокації → Safari</strong>',
+    permStep3: 'Оберіть <strong>Під час використання</strong> або <strong>Запитувати</strong>',
+    permStep4: 'Поверніться сюди і натисніть стрілку геолокації знову',
+    permSettings: 'Відкрити налаштування ↗',
+    permClose: 'Закрити',
+    beerHint: 'Постав нам пиво 🍻',
+    disclaimer: 'Без гарантій – дивіться офіційну <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">карту SLRG річки Ааре</a> · Геолокація залишається на вашому пристрої · Екстрена допомога <strong>112</strong>'
+  },
+  ru: {
+    subtitle: 'Сплав · Тун → Берн',
+    statsTitle: 'Данные онлайн: aare.guru',
+    statTemp: 'Вода Берн',
+    statFlowThun: 'Расход Тун',
+    statFlowBern: 'Расход Берн',
+    statTime: 'Время сплава',
+    listBtn: 'Маршрут',
+    resetBtn: 'Обзор',
+    panelTitle: 'Маршрут вниз по течению',
+    legendEntry: 'Старт',
+    legendDanger: 'Опасность',
+    legendExit: 'Выход',
+    legendWeir: 'Закрыто',
+    legendRental: 'Прокат',
+    website: 'Открыть сайт ↗',
+    labelStart: 'СТАРТ',
+    labelEnd: 'ФИНИШ',
+    subtitlePartner: 'Сплав · Schwäbis → Eichholz',
+    progressMissedExit: '⚠️ Выход пропущен – выйдите не позднее Eichholz!',
+    introStart: 'Открыть карту',
+    introHintPartner: 'Официальная карта маршрута',
+    progress: '🏁 {dest}: {km} км · прибл. {eta}',
+    progressDanger: '⛔ Eichholz пройден – НЕМЕДЛЕННО выходите, впереди плотина!',
+    hazardAhead: '⚠️ {name} через {m} м',
+    locError: 'Местоположение недоступно – разрешите доступ к геолокации в браузере.',
+    locateAria: 'Показать моё местоположение',
+    locateHint: 'Показать моё местоположение',
+    highFlow: '⚠️ Высокий уровень воды ({flow} м³/с в Берне) – сплав только для опытных!',
+    permTitle: 'Включить геолокацию',
+    permBody: 'Safari блокирует доступ к вашему местоположению. Как включить:',
+    permStep1: 'Нажмите <strong>Открыть настройки</strong> ниже',
+    permStep2: 'Перейдите в <strong>Настройки → Конфиденциальность → Службы геолокации → Safari</strong>',
+    permStep3: 'Выберите <strong>При использовании</strong> или <strong>Спросить</strong>',
+    permStep4: 'Вернитесь сюда и нажмите стрелку геолокации снова',
+    permSettings: 'Открыть настройки ↗',
+    permClose: 'Закрыть',
+    beerHint: 'Угости нас пивом 🍻',
+    disclaimer: 'Без гарантий – см. официальную <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">карту SLRG реки Ааре</a> · Геолокация остаётся на вашем устройстве · Экстренная помощь <strong>112</strong>'
   }
 };
