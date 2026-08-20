@@ -15,66 +15,165 @@
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <header class="adm-top">
-    <div>
-      <h1>Aare Map <span>Admin</span></h1>
-      <p>Änderungen werden via GitHub veröffentlicht und sind ca. 1 Minute nach dem Speichern live.</p>
+
+  <!-- ===== Header ===== -->
+  <header class="adm-header">
+    <h1>Aare Map <span>Admin</span></h1>
+    <div class="adm-header-right">
+      <span id="conn-status" class="adm-status none">Nicht verbunden</span>
+      <a class="adm-back" href="./">← Zur Karte</a>
     </div>
-    <a class="adm-back" href="./">→ Zur Karte</a>
   </header>
 
-  <main>
-    <!-- ===== GitHub connection ===== -->
-    <section class="card" id="sec-token">
-      <h2>Verbindung</h2>
-      <p class="hint">Fine-grained GitHub-Token mit <b>Contents: Read & Write</b> nur für dieses Repository.
-        Erstellen unter <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → Settings → Tokens</a>.
-        Der Token bleibt in diesem Browser.</p>
-      <div class="row">
-        <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
-        <button id="token-save" class="btn">Speichern</button>
-      </div>
-      <p id="token-status" class="status"></p>
-    </section>
-
-    <!-- ===== Site alert ===== -->
-    <section class="card" id="sec-alert">
-      <h2>Site-Alert</h2>
-      <p class="hint">Banner, das allen Besuchern unter dem Titel angezeigt wird – z.&nbsp;B. bei Hochwasser, Streckensperrung oder Veranstaltungen.</p>
-      <div class="row wrap">
-        <label class="check"><input type="checkbox" id="alert-enabled"> Aktiv</label>
-        <select id="alert-level">
-          <option value="info">Info (blau)</option>
-          <option value="warn">Warnung (orange)</option>
-          <option value="danger">Gefahr (rot)</option>
-        </select>
-      </div>
-      <label class="field">Deutsch <textarea id="alert-de" rows="2"></textarea></label>
-      <label class="field">Français <textarea id="alert-fr" rows="2"></textarea></label>
-      <label class="field">English <textarea id="alert-en" rows="2"></textarea></label>
-    </section>
-
-    <!-- ===== POIs ===== -->
-    <section class="card" id="sec-pois">
-      <h2>Streckenpunkte</h2>
-      <p class="hint">Sicherheitspunkte (Gefahr/Wehr) sollten für alle sichtbar bleiben («Alle»).
-        «Nur Vermietung» erscheint ausschliesslich auf <code>/vermietung</code>.</p>
-      <ul id="poi-admin-list"></ul>
-      <button id="poi-add" class="btn ghost">+ Punkt hinzufügen</button>
-    </section>
-
-    <!-- ===== Publish ===== -->
-    <div class="publish-bar">
-      <span id="dirty-note"></span>
-      <button id="download" class="btn ghost">Dateien herunterladen</button>
-      <button id="publish" class="btn primary">Veröffentlichen</button>
+  <!-- GitHub Token (collapsible) -->
+  <div class="token-section" id="sec-token">
+    <div class="row">
+      <input type="password" id="token" placeholder="GitHub Token (github_pat_…)" autocomplete="off">
+      <button id="token-save" class="btn">Verbinden</button>
     </div>
-  </main>
+  </div>
 
-  <!-- ===== POI editor dialog ===== -->
+  <!-- ===== Tab Navigation ===== -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="pois">
+      <span class="tab-icon">📍</span> Streckenpunkte
+    </button>
+    <button class="tab-btn" data-tab="translations">
+      <span class="tab-icon">🌐</span> Übersetzungen
+    </button>
+    <button class="tab-btn" data-tab="alerts">
+      <span class="tab-icon">🚨</span> Warnungen
+    </button>
+    <button class="tab-btn" data-tab="settings">
+      <span class="tab-icon">⚙️</span> Einstellungen
+    </button>
+  </nav>
+
+  <!-- ===== Tab Content ===== -->
+  <div class="tab-content">
+
+    <!-- ────── Tab 1: POIs ────── -->
+    <section class="tab-panel active" id="panel-pois">
+      <div class="card">
+        <h2><span class="card-icon">📍</span> Streckenpunkte</h2>
+        <p class="hint">Sicherheitspunkte (Gefahr/Wehr) sollten für alle sichtbar bleiben.
+          «Nur Vermietung» erscheint ausschliesslich auf <code>/vermietung</code>.</p>
+
+        <!-- Search + Filter -->
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input type="search" id="poi-search" placeholder="Suchen…">
+          </div>
+          <div class="filter-pills" id="poi-filters">
+            <button class="filter-pill active" data-filter="all">Alle</button>
+            <button class="filter-pill" data-filter="entry">Einstieg</button>
+            <button class="filter-pill" data-filter="exit">Ausstieg</button>
+            <button class="filter-pill" data-filter="danger">Gefahr</button>
+            <button class="filter-pill" data-filter="weir">Wehr</button>
+            <button class="filter-pill" data-filter="rental">Vermietung</button>
+            <button class="filter-pill" data-filter="restaurant">Restaurant</button>
+            <button class="filter-pill" data-filter="info">Info</button>
+          </div>
+        </div>
+
+        <ul class="poi-list" id="poi-list"></ul>
+        <button id="poi-add" class="btn ghost">+ Punkt hinzufügen</button>
+      </div>
+    </section>
+
+    <!-- ────── Tab 2: Translations ────── -->
+    <section class="tab-panel" id="panel-translations">
+      <div class="card">
+        <h2><span class="card-icon">🌐</span> Übersetzungen</h2>
+        <p class="hint">Bearbeite die UI-Texte für jede Sprache. Der deutsche Text wird als Referenz angezeigt.</p>
+
+        <div class="row wrap" style="margin-bottom:16px">
+          <label class="field" style="margin-bottom:0">
+            Sprache bearbeiten
+            <select id="trans-lang"></select>
+          </label>
+        </div>
+
+        <div id="trans-editor"></div>
+      </div>
+    </section>
+
+    <!-- ────── Tab 3: Alerts ────── -->
+    <section class="tab-panel" id="panel-alerts">
+      <div class="card">
+        <h2><span class="card-icon">🚨</span> Site-Alert</h2>
+        <p class="hint">Banner, das allen Besuchern unter dem Titel angezeigt wird – z.&nbsp;B. bei Hochwasser, Streckensperrung oder Veranstaltungen.</p>
+
+        <div id="alert-preview" class="alert-preview off">Kein Alert aktiv</div>
+
+        <div class="row wrap">
+          <label class="check"><input type="checkbox" id="alert-enabled"> Aktiv</label>
+          <select id="alert-level">
+            <option value="info">Info (blau)</option>
+            <option value="warn">Warnung (orange)</option>
+            <option value="danger">Gefahr (rot)</option>
+          </select>
+        </div>
+
+        <div class="editor-section">Alert-Text pro Sprache</div>
+        <div id="alert-langs"></div>
+      </div>
+    </section>
+
+    <!-- ────── Tab 4: Settings ────── -->
+    <section class="tab-panel" id="panel-settings">
+      <div class="card">
+        <h2><span class="card-icon">⚙️</span> Einstellungen</h2>
+
+        <div class="setting-group">
+          <h3>Partner-Konfiguration</h3>
+          <div class="setting-readonly" id="partner-info"></div>
+        </div>
+
+        <div class="setting-group">
+          <h3>TWINT Spendenlink</h3>
+          <label class="field">URL
+            <input type="url" id="twint-url" placeholder="https://…">
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <h3>Notfall-Informationen</h3>
+          <div class="setting-readonly">
+            Notruf: <strong>112</strong><br>
+            Polizei: <strong>117</strong><br>
+            Sanität: <strong>144</strong><br>
+            SLRG Rettung: <strong>118</strong><br>
+            <a href="https://echosos.com" target="_blank" rel="noopener">EchoSOS App ↗</a>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3>Credits</h3>
+          <div class="setting-readonly">
+            Design &amp; Entwicklung: <a href="https://hldr.ch" target="_blank" rel="noopener">hldr.ch ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- .tab-content -->
+
+  <!-- ===== Publish Bar ===== -->
+  <div class="publish-bar">
+    <span id="dirty-note"></span>
+    <button id="download" class="btn ghost">Herunterladen</button>
+    <button id="publish" class="btn primary">Veröffentlichen</button>
+  </div>
+
+  <!-- ===== POI Editor Dialog ===== -->
   <div id="editor-wrap" class="hidden">
     <div id="editor" role="dialog" aria-modal="true">
       <h3 id="editor-title">Punkt bearbeiten</h3>
+
       <div class="grid2">
         <label class="field">ID <input id="e-id"></label>
         <label class="field">Typ
@@ -84,6 +183,8 @@
             <option value="danger">Gefahr</option>
             <option value="weir">Wehr/Gesperrt</option>
             <option value="rental">Vermietung</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="sponsor">Sponsor</option>
             <option value="info">Info</option>
           </select>
         </label>
@@ -98,15 +199,32 @@
         <label class="field">Breitengrad <input id="e-lat" type="number" step="0.00001"></label>
         <label class="field">Längengrad <input id="e-lon" type="number" step="0.00001"></label>
       </div>
+
       <div id="pick-map"></div>
-      <p class="hint">Auf die Karte tippen, um die Position zu setzen.</p>
-      <label class="field">Website (optional) <input id="e-url" type="url" placeholder="https://…"></label>
-      <label class="field">Name DE <input id="e-name-de"></label>
-      <label class="field">Name FR <input id="e-name-fr"></label>
-      <label class="field">Name EN <input id="e-name-en"></label>
-      <label class="field">Beschreibung DE <textarea id="e-desc-de" rows="3"></textarea></label>
-      <label class="field">Beschreibung FR <textarea id="e-desc-fr" rows="3"></textarea></label>
-      <label class="field">Beschreibung EN <textarea id="e-desc-en" rows="3"></textarea></label>
+      <p class="hint">Auf die Karte tippen oder Marker ziehen, um die Position zu setzen.</p>
+
+      <div class="editor-section">Links & Extras</div>
+      <div class="grid2">
+        <label class="field">Website / Buchung <input id="e-url" type="url" placeholder="https://…"></label>
+        <label class="field">Action-URL <input id="e-action-url" type="url" placeholder="https://…"></label>
+        <label class="field">Logo-Pfad <input id="e-logo-url" placeholder="img/logo.png"></label>
+        <div class="premium-row">
+          <label class="check"><input type="checkbox" id="e-premium"> Premium / Sponsor</label>
+        </div>
+      </div>
+
+      <div class="editor-section">Name</div>
+      <div class="lang-tabs" id="e-name-tabs"></div>
+      <div id="e-name-fields"></div>
+
+      <div class="editor-section">Beschreibung</div>
+      <div class="lang-tabs" id="e-desc-tabs"></div>
+      <div id="e-desc-fields"></div>
+
+      <div class="editor-section">Öffnungszeiten (optional)</div>
+      <div class="lang-tabs" id="e-hours-tabs"></div>
+      <div id="e-hours-fields"></div>
+
       <div class="row right">
         <button id="e-delete" class="btn danger">Löschen</button>
         <span class="spacer"></span>

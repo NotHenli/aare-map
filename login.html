@@ -100,6 +100,48 @@
       color: #3d5a73;
     }
 
+    .otp-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #8899aa;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .otp-boxes {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .otp-box {
+      width: 46px;
+      height: 56px;
+      background: #0b1d2a;
+      border: 1.5px solid #2a4a63;
+      border-radius: 12px;
+      color: #fff;
+      font: inherit;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      caret-color: #1AA3A3;
+    }
+
+    .otp-box:focus {
+      border-color: #1AA3A3;
+      box-shadow: 0 0 0 3px rgba(26, 163, 163, 0.18);
+    }
+
+    .otp-box.filled {
+      border-color: #1AA3A3;
+      background: rgba(26, 163, 163, 0.08);
+    }
+
     .submit-btn {
       display: block;
       width: 100%;
@@ -148,6 +190,11 @@
       transition: color 0.2s;
     }
     .back-link:hover { color: #1AA3A3; }
+
+    @media (max-width: 380px) {
+      .otp-box { width: 40px; height: 50px; font-size: 20px; }
+      .otp-boxes { gap: 5px; }
+    }
   </style>
 </head>
 <body>
@@ -162,9 +209,15 @@
     </div>
 
     <div class="field">
-      <label for="code">Authenticator Code</label>
-      <input type="text" id="code" name="code" placeholder="6-digit code" required
-             inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code">
+      <label class="otp-label">Authenticator Code</label>
+      <div class="otp-boxes" id="otp-boxes">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="0" autocomplete="one-time-code">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="1">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="2">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="3">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="4">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" data-idx="5">
+      </div>
     </div>
 
     <button type="submit" class="submit-btn" id="submit-btn">Sign In</button>
@@ -178,9 +231,60 @@
     const form = document.getElementById('login-form');
     const errorEl = document.getElementById('error-msg');
     const submitBtn = document.getElementById('submit-btn');
+    const boxes = [...document.querySelectorAll('.otp-box')];
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    function getCode() {
+      return boxes.map(b => b.value).join('');
+    }
+
+    function updateFilled() {
+      boxes.forEach(b => b.classList.toggle('filled', b.value.length > 0));
+    }
+
+    // Handle typing in each box
+    boxes.forEach((box, i) => {
+      box.addEventListener('input', e => {
+        // Only allow digits
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        updateFilled();
+
+        if (box.value && i < 5) {
+          boxes[i + 1].focus();
+        }
+
+        // Auto-submit when all 6 filled
+        if (getCode().length === 6) {
+          setTimeout(() => form.requestSubmit(), 80);
+        }
+      });
+
+      // Handle paste (full 6-digit code)
+      box.addEventListener('paste', e => {
+        e.preventDefault();
+        const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+        if (!paste) return;
+        paste.split('').forEach((ch, j) => {
+          if (boxes[j]) boxes[j].value = ch;
+        });
+        updateFilled();
+        const focusIdx = Math.min(paste.length, 5);
+        boxes[focusIdx].focus();
+        if (paste.length === 6) {
+          setTimeout(() => form.requestSubmit(), 80);
+        }
+      });
+
+      // Handle backspace
+      box.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !box.value && i > 0) {
+          boxes[i - 1].focus();
+          boxes[i - 1].value = '';
+          updateFilled();
+        }
+      });
+    });
+
+    async function doLogin() {
       errorEl.classList.remove('show');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Signing in…';
@@ -191,18 +295,21 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             password: document.getElementById('password').value,
-            code: document.getElementById('code').value
+            code: getCode()
           })
         });
 
         const data = await res.json();
 
         if (data.ok) {
-          // Cookie is set by the API response – redirect to admin
           window.location.href = '/admin.html';
         } else {
           errorEl.textContent = data.error || 'Login failed. Check your credentials.';
           errorEl.classList.add('show');
+          // Clear OTP boxes on error
+          boxes.forEach(b => b.value = '');
+          updateFilled();
+          boxes[0].focus();
         }
       } catch (err) {
         errorEl.textContent = 'Connection error. Please try again.';
@@ -211,9 +318,14 @@
         submitBtn.disabled = false;
         submitBtn.textContent = 'Sign In';
       }
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      doLogin();
     });
 
-    // Auto-focus the password field
+    // Auto-focus password field
     document.getElementById('password').focus();
   </script>
 </body>

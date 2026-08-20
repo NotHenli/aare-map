@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
   const token = await new SignJWT({ role: 'admin' })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('24h')
+    .setExpirationTime('15m')
     .sign(secret);
 
   // Set HttpOnly, Secure cookie (24h max-age)
@@ -57,7 +57,7 @@ module.exports = async function handler(req, res) {
     'Path=/',
     'HttpOnly',
     'SameSite=Strict',
-    `Max-Age=${60 * 60 * 24}`,
+    `Max-Age=${60 * 15}`,
   ];
   if (!isLocal) cookieFlags.push('Secure');
 
