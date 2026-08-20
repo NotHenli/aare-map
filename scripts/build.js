@@ -9,9 +9,10 @@ const distDir = path.join(root, 'dist');
 
 // Not deployed: tooling, docs and the raw geodata (runtime only needs data/river.js).
 const exclude = new Set([
-  'node_modules', 'dist', '.git', '.github', '.vscode', 'scripts',
+  'node_modules', 'dist', '.git', '.github', '.vscode', '.claude', 'scripts',
   '.gitignore', 'package.json', 'package-lock.json', 'README.md',
-  'river_raw.json', 'river.geojson'
+  'river_raw.json', 'river.geojson',
+  'setup.html', 'middleware.js', 'api'
 ]);
 
 async function copyDir(src, dest) {
