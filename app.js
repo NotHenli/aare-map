@@ -826,7 +826,7 @@ function setStat(id, text, warn) {
   if (warn) el.parentElement.classList.add('warn');
 }
 
-fetch('https://aarebootsvermietung.vercel.app/api/aare-status')
+fetch('/api/aare-data')
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(data => {
     const t = data.stations.thun.hydro;
