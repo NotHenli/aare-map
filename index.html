@@ -315,8 +315,97 @@
   <div id="toast" role="status"></div>
 
   <footer id="disclaimer">
-    Keine Gewähr – offizielle <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Standort bleibt auf dem Gerät · Notfall <strong>112</strong>
+    <span class="disclaimer-left">Keine Gewähr – offizielle <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekarte</a> beachten · Notfall <strong>112</strong></span>
+    <span class="disclaimer-right">
+      <button class="legal-link" data-modal="modal-impressum">Impressum</button>
+      <span class="legal-sep">·</span>
+      <button class="legal-link" data-modal="modal-datenschutz">Datenschutz</button>
+      <span class="legal-sep">·</span>
+      <button class="legal-link" data-modal="modal-haftung">Haftung</button>
+      <span class="legal-sep">·</span>
+      <span class="agency-credit">Powered by <a href="https://hldr.ch" target="_blank" rel="noopener noreferrer">hldr</a></span>
+    </span>
   </footer>
+
+  <!-- ===== Legal Modals ===== -->
+
+  <!-- Impressum -->
+  <div id="modal-impressum" class="legal-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-impressum-title">
+    <div class="legal-modal-box">
+      <button class="legal-modal-close" aria-label="Schliessen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+      <h2 id="modal-impressum-title">Impressum</h2>
+      <p class="legal-section-label">Betreiber / Verantwortlicher</p>
+      <!-- TODO: Ersetze die folgenden Platzhalter mit deinen echten Angaben -->
+      <p>
+        [Vorname Nachname]<br>
+        [Strasse Nr]<br>
+        [PLZ Ort], Schweiz
+      </p>
+      <p class="legal-section-label">Kontakt</p>
+      <p>E-Mail: <a href="mailto:kontakt@aaremap.ch">kontakt@aaremap.ch</a></p>
+      <p class="legal-section-label">Haftungshinweis</p>
+      <p>Die Inhalte dieser Website wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird keine Gewähr übernommen. Diese Website dient ausschliesslich zu Informationszwecken und ersetzt keine offiziellen Sicherheitshinweise.</p>
+      <p class="legal-section-label">Urheberrecht</p>
+      <p>Die auf dieser Website veröffentlichten Inhalte unterliegen dem schweizerischen Urheberrecht. Kartendaten: © <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Live-Daten: <a href="https://aare.guru" target="_blank" rel="noopener">aare.guru</a> (BAFU) · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>
+    </div>
+  </div>
+
+  <!-- Datenschutzerklärung -->
+  <div id="modal-datenschutz" class="legal-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-datenschutz-title">
+    <div class="legal-modal-box">
+      <button class="legal-modal-close" aria-label="Schliessen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+      <h2 id="modal-datenschutz-title">Datenschutzerklärung</h2>
+      <p class="legal-intro">Diese Erklärung gilt für <strong>aaremap.ch</strong> gemäss dem Schweizer Datenschutzgesetz (DSG) und der DSGVO, soweit anwendbar.</p>
+
+      <p class="legal-section-label">Verantwortliche Stelle</p>
+      <!-- TODO: Gleiche Angaben wie Impressum -->
+      <p>[Vorname Nachname], [Adresse], [PLZ Ort] · E-Mail: <a href="mailto:kontakt@aaremap.ch">kontakt@aaremap.ch</a></p>
+
+      <p class="legal-section-label">Standortdaten (GPS)</p>
+      <p>Wenn du auf «Meinen Standort anzeigen» tippst, wird dein GPS-Standort <strong>ausschliesslich lokal auf deinem Gerät</strong> verarbeitet. Es werden keine Koordinaten gespeichert oder an Dritte übertragen. Die Abfrage erfolgt über die browser-eigene Geolocation API.</p>
+
+      <p class="legal-section-label">Lokaler Speicher (localStorage)</p>
+      <p>Die App speichert ausschliesslich deine gewählte Sprache (<code>aare-lang</code>) im lokalen Speicher deines Browsers. Es werden keine Tracking-Cookies und keine personenbezogenen Daten gespeichert.</p>
+
+      <p class="legal-section-label">Serverbetrieb (Vercel)</p>
+      <p>Die Website wird über <a href="https://vercel.com" target="_blank" rel="noopener">Vercel Inc.</a> (USA) gehostet. Vercel erfasst im Rahmen des Serverbetriebs technische Zugriffsdaten (IP-Adresse, Zeitstempel, aufgerufene URL, Browser-Typ). Diese Daten werden von Vercel gemäss deren <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Datenschutzrichtlinie</a> verarbeitet und dienen ausschliesslich der Sicherheit und dem Betrieb des Dienstes.</p>
+
+      <p class="legal-section-label">Kartendaten &amp; Live-Daten</p>
+      <p>Kartenkacheln werden anonym von <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> geladen. Live-Wasserdaten (Temperatur, Abfluss) werden anonym von <a href="https://aare.guru" target="_blank" rel="noopener">aare.guru</a> (BAFU-Daten) abgerufen. Es werden dabei keine personenbezogenen Daten übertragen.</p>
+
+      <p class="legal-section-label">TWINT-Zahlungen (Spendenlink)</p>
+      <p>Der «Buy us a beer»-Button öffnet einen externen TWINT-Zahlungslink. Sobald du auf diesen Link klickst, verlässt du unsere Website. Die Verarbeitung der Zahlung erfolgt ausschliesslich durch <a href="https://www.twint.ch" target="_blank" rel="noopener">TWINT AG</a> gemäss deren Datenschutzbestimmungen. Wir erhalten keine personenbezogenen Daten aus TWINT-Transaktionen.</p>
+
+      <p class="legal-section-label">Deine Rechte</p>
+      <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Widerspruch bezüglich deiner Daten. Da wir selbst keine personenbezogenen Daten erheben oder speichern, richte Anfragen betreffend Vercel-Serverlogs an <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel</a> direkt.</p>
+    </div>
+  </div>
+
+  <!-- Haftungsausschluss -->
+  <div id="modal-haftung" class="legal-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-haftung-title">
+    <div class="legal-modal-box">
+      <button class="legal-modal-close" aria-label="Schliessen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+      <h2 id="modal-haftung-title">Haftungsausschluss</h2>
+
+      <p class="legal-section-label">Informationszweck</p>
+      <p>Aare Map ist eine <strong>rein informative Anwendung</strong>. Alle dargestellten Inhalte – inkl. Karteninformationen, Gefahrenstellen, Wassertemperaturen, Abflussdaten und Fahrzeitschätzungen – dienen ausschliesslich zur Orientierung und ersetzen in keiner Weise offizielle Sicherheitshinweise, amtliche Warnungen oder behördliche Empfehlungen.</p>
+
+      <p class="legal-section-label">Keine lebensrettenden Entscheidungen</p>
+      <p>Die angezeigten Hydrologiedaten stammen vom BAFU via aare.guru und werden ohne Garantie auf Aktualität oder Richtigkeit weitergegeben. Wetter- und Abflussdaten können sich rasch ändern. <strong>Treffe keine lebensrelevanten Entscheidungen allein auf Basis dieser App.</strong> Konsultiere stets die offizielle <a href="https://slrgbern.ch/aarekarte/" target="_blank" rel="noopener">SLRG-Aarekarte</a>, aktuelle Wetterberichte und die Gefahrenmeldungen der zuständigen Behörden.</p>
+
+      <p class="legal-section-label">Eigenverantwortung</p>
+      <p>Du benutzt die Aare auf eigene Gefahr. Der Betreiber von Aare Map übernimmt keinerlei Haftung für Personen-, Sach- oder Vermögensschäden, die im Zusammenhang mit der Nutzung dieser App oder der Befahrung der Aare entstehen. Kinder müssen stets von Erwachsenen beaufsichtigt werden. Im Notfall: <strong>112</strong>.</p>
+
+      <p class="legal-section-label">Externe Links</p>
+      <p>Für den Inhalt verlinkter externer Websites wird keine Verantwortung übernommen. Die Betreiber der verlinkten Seiten sind für deren Inhalt selbst verantwortlich.</p>
+    </div>
+  </div>
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="data/river.js"></script>
@@ -324,5 +413,49 @@
   <script src="data/pois.js"></script>
   <script src="data/site.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Legal modal open/close logic
+    (function () {
+      var overlay = document.querySelectorAll('.legal-modal');
+
+      function openModal(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        el.querySelector('.legal-modal-close').focus();
+      }
+
+      function closeModal(el) {
+        el.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      // Footer trigger buttons
+      document.querySelectorAll('.legal-link[data-modal]').forEach(function (btn) {
+        btn.addEventListener('click', function () { openModal(btn.getAttribute('data-modal')); });
+      });
+
+      // Close buttons inside each modal
+      document.querySelectorAll('.legal-modal-close').forEach(function (btn) {
+        btn.addEventListener('click', function () { closeModal(btn.closest('.legal-modal')); });
+      });
+
+      // Click on backdrop closes
+      overlay.forEach(function (modal) {
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal(modal);
+        });
+      });
+
+      // Escape key closes
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        overlay.forEach(function (modal) {
+          if (!modal.classList.contains('hidden')) closeModal(modal);
+        });
+      });
+    }());
+  </script>
 </body>
 </html>

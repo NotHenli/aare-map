@@ -36,7 +36,7 @@ L.tileLayer(
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
   {
     maxZoom: 19,
-    attribution: '© <a href="https://www.swisstopo.admin.ch">swisstopo</a> · Fluss: © <a href="https://www.openstreetmap.org/copyright">OSM</a> · Live: <a href="https://aare.guru">aare.guru</a>'
+    attribution: '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Daten: BAFU via <a href="https://aare.guru" target="_blank" rel="noopener">aare.guru</a> · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>'
   }
 ).addTo(map);
 
