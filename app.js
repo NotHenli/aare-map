@@ -3,7 +3,7 @@
  * Privacy: geolocation is used exclusively on-device to draw the position dot
  * and compute the remaining distance. Coordinates are never stored and never
  * sent anywhere – the only network requests are map tiles (swisstopo) and
- * anonymous river data (aare.guru). The sole persisted value is the chosen
+ * anonymous river data (aarebootsvermietung.ch). The sole persisted value is the chosen
  * UI language (localStorage 'aare-lang'). */
 
 // --- i18n: saved choice > browser language > German ---
@@ -807,7 +807,7 @@ locPermModal.addEventListener('click', e => { if (e.target === locPermModal) hid
 document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePermModal(); });
 
 
-// --- Live data from aare.guru: temperature, flow Thun & Bern, float time estimate ---
+// --- Live data from aarebootsvermietung.ch: temperature, flow Thun & Bern, float time estimate ---
 // Rule of thumb for Thun→Bern (based on flow at Thun):
 //   < 115 ≈ 4 h · 115–130 ≈ 3¾ h · 130–150 ≈ 3½ h · 150–175 ≈ 3¼ h · 175–200 ≈ 3 h · ≥ 200 < 3 h
 function floatTime(flow) {

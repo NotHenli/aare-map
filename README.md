@@ -3,7 +3,7 @@
 Interaktive Sicherheitskarte für die Aare-Bootsfahrt von Thun nach Bern.
 Zeigt Einstiege, Gefahrenstellen, Ausstiege, Bootsvermietungen und den
 Live-Standort – mit Wassertemperatur, Abfluss (Thun & Bern) und geschätzter
-Fahrzeit von aare.guru. Unterwegs zeigt die App die Restdistanz bis zum
+Fahrzeit von aarebootsvermietung.ch. Unterwegs zeigt die App die Restdistanz bis zum
 Ausstieg Eichholz und warnt vor Gefahrenstellen. Als PWA auf dem Homescreen
 installierbar.
 
@@ -50,7 +50,7 @@ ohne Feld: überall sichtbar). Sicherheitspunkte nie einschränken.
 
 - **Kartenkacheln:** [swisstopo](https://www.swisstopo.admin.ch) – frei nutzbar mit Quellenangabe
 - **Flussgeometrie & POI-Koordinaten:** [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL)
-- **Wassertemperatur/Abfluss:** [aare.guru](https://aare.guru) API ([Existenz API](https://api.existenz.ch), Quellenangabe erforderlich)
+- **Wassertemperatur/Abfluss:** [Aarebootsvermietung](https://aarebootsvermietung.ch/en/aare-status) API (BAFU-Daten, Quellenangabe erforderlich)
 - Sicherheitsinformationen orientieren sich an der offiziellen SLRG-Aarekarte.
   **Wichtig:** Das Kartenbild/PDF der SLRG ist urheberrechtlich geschützt und
   darf nicht kopiert werden – diese Seite verwendet ausschliesslich eigene
