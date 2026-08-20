@@ -15,6 +15,6 @@
     { "source": "/vermietung", "destination": "/index.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/login", "destination": "/login.html" },
-    { "source": "/_proxy/aare", "destination": "https://aarebootsvermietung.vercel.app/api/aare-status" }
+    { "source": "/_proxy/aare", "destination": "https://aarebootsvermietung.ch/api/aare-status" }
   ]
 }

@@ -829,18 +829,18 @@ function setStat(id, text, warn) {
 fetch('/_proxy/aare')
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(data => {
-    const t = data.stations.thun.hydro;
-    const b = data.stations.bern.hydro;
+    const t = data.stations.thun.water;
+    const b = data.stations.bern.water;
 
-    if (b.water_temperature != null) setStat('stat-temp', `${b.water_temperature} °C`);
-    if (t.flow != null) setStat('stat-flow-thun', `${t.flow} m³/s`);
+    if (b.water_temperature_c != null) setStat('stat-temp', `${b.water_temperature_c} °C`);
+    if (t.flow_m3s != null) setStat('stat-flow-thun', `${t.flow_m3s} m³/s`);
     // City of Bern advises caution for boaters above ~220 m³/s
-    if (b.flow != null) setStat('stat-flow-bern', `${b.flow} m³/s`, b.flow >= 220);
+    if (b.flow_m3s != null) setStat('stat-flow-bern', `${b.flow_m3s} m³/s`, b.flow_m3s >= 220);
 
-    const time = floatTime(t.flow != null ? t.flow : b.flow);
+    const time = floatTime(t.flow_m3s != null ? t.flow_m3s : b.flow_m3s);
     if (time) setStat('stat-time', time);
-    if (b.flow != null && b.flow >= 220) {
-      toast(fmt(MESSAGES[LANG].highFlow, { flow: b.flow }));
+    if (b.flow_m3s != null && b.flow_m3s >= 220) {
+      toast(fmt(MESSAGES[LANG].highFlow, { flow: b.flow_m3s }));
     }
   })
   .catch(() => { /* live data is optional; map works without it */ });
