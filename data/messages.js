@@ -19,7 +19,7 @@ const LANG_INFO = {
 const MESSAGES = {
   de: {
     subtitle: 'Böötle · Thun → Bern',
-    statsTitle: 'Live-Daten: aare.guru',
+    statsTitle: 'Live-Daten: aarebootsvermietung.ch',
     statTemp: 'Wasser Bern',
     statFlowThun: 'Abfluss Thun',
     statFlowBern: 'Abfluss Bern',
@@ -59,7 +59,7 @@ const MESSAGES = {
   },
   en: {
     subtitle: 'River float · Thun → Bern',
-    statsTitle: 'Live data: aare.guru',
+    statsTitle: 'Live data: aarebootsvermietung.ch',
     statTemp: 'Water Bern',
     statFlowThun: 'Flow Thun',
     statFlowBern: 'Flow Bern',
@@ -99,7 +99,7 @@ const MESSAGES = {
   },
   fr: {
     subtitle: 'Descente en bateau · Thoune → Berne',
-    statsTitle: 'Données en direct : aare.guru',
+    statsTitle: 'Données en direct : aarebootsvermietung.ch',
     statTemp: 'Eau Berne',
     statFlowThun: 'Débit Thoune',
     statFlowBern: 'Débit Berne',
@@ -139,7 +139,7 @@ const MESSAGES = {
   },
   it: {
     subtitle: 'Discesa in gommone · Thun → Berna',
-    statsTitle: 'Dati in tempo reale: aare.guru',
+    statsTitle: 'Dati in tempo reale: aarebootsvermietung.ch',
     statTemp: 'Acqua Berna',
     statFlowThun: 'Flusso Thun',
     statFlowBern: 'Flusso Berna',
@@ -179,7 +179,7 @@ const MESSAGES = {
   },
   es: {
     subtitle: 'Descenso en lancha · Thun → Berna',
-    statsTitle: 'Datos en directo: aare.guru',
+    statsTitle: 'Datos en directo: aarebootsvermietung.ch',
     statTemp: 'Agua Berna',
     statFlowThun: 'Caudal Thun',
     statFlowBern: 'Caudal Berna',
@@ -219,7 +219,7 @@ const MESSAGES = {
   },
   nl: {
     subtitle: 'Boottocht · Thun → Bern',
-    statsTitle: 'Live gegevens: aare.guru',
+    statsTitle: 'Live gegevens: aarebootsvermietung.ch',
     statTemp: 'Water Bern',
     statFlowThun: 'Afvoer Thun',
     statFlowBern: 'Afvoer Bern',
@@ -259,7 +259,7 @@ const MESSAGES = {
   },
   pt: {
     subtitle: 'Descida de barco · Thun → Berna',
-    statsTitle: 'Dados ao vivo: aare.guru',
+    statsTitle: 'Dados ao vivo: aarebootsvermietung.ch',
     statTemp: 'Água Berna',
     statFlowThun: 'Vazão Thun',
     statFlowBern: 'Vazão Berna',
@@ -299,7 +299,7 @@ const MESSAGES = {
   },
   zh: {
     subtitle: '阿勒河漂流 · 图恩 → 伯尔尼',
-    statsTitle: '实时数据：aare.guru',
+    statsTitle: '实时数据：aarebootsvermietung.ch',
     statTemp: '伯尔尼水温',
     statFlowThun: '图恩流量',
     statFlowBern: '伯尔尼流量',
@@ -339,7 +339,7 @@ const MESSAGES = {
   },
   ja: {
     subtitle: 'アーレ川ボート下り · トゥーン → ベルン',
-    statsTitle: 'リアルタイムデータ: aare.guru',
+    statsTitle: 'リアルタイムデータ: aarebootsvermietung.ch',
     statTemp: '水温 ベルン',
     statFlowThun: '流量 トゥーン',
     statFlowBern: '流量 ベルン',
@@ -379,7 +379,7 @@ const MESSAGES = {
   },
   ar: {
     subtitle: 'رحلة قارب نهر الآر · ثون ← برن',
-    statsTitle: 'بيانات حية: aare.guru',
+    statsTitle: 'بيانات حية: aarebootsvermietung.ch',
     statTemp: 'حرارة مياه برن',
     statFlowThun: 'تدفق ثون',
     statFlowBern: 'تدفق برن',
@@ -419,7 +419,7 @@ const MESSAGES = {
   },
   uk: {
     subtitle: 'Сплав · Тун → Берн',
-    statsTitle: 'Дані наживо: aare.guru',
+    statsTitle: 'Дані наживо: aarebootsvermietung.ch',
     statTemp: 'Вода Берн',
     statFlowThun: 'Витрата Тун',
     statFlowBern: 'Витрата Берн',
@@ -459,7 +459,7 @@ const MESSAGES = {
   },
   ru: {
     subtitle: 'Сплав · Тун → Берн',
-    statsTitle: 'Данные онлайн: aare.guru',
+    statsTitle: 'Данные онлайн: aarebootsvermietung.ch',
     statTemp: 'Вода Берн',
     statFlowThun: 'Расход Тун',
     statFlowBern: 'Расход Берн',

@@ -36,7 +36,7 @@ L.tileLayer(
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
   {
     maxZoom: 19,
-    attribution: '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Daten: BAFU via <a href="https://aare.guru" target="_blank" rel="noopener">aare.guru</a> · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>'
+    attribution: '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Aare: <a href="https://aarebootsvermietung.ch/en/aare-status" target="_blank" rel="noopener">Aarebootsvermietung</a> · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>'
   }
 ).addTo(map);
 
@@ -826,29 +826,24 @@ function setStat(id, text, warn) {
   if (warn) el.parentElement.classList.add('warn');
 }
 
-const aareBase = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-  ? 'https://aareguru.existenz.ch'
-  : '/api/aare';
-const aareGuru = city =>
-  fetch(`${aareBase}/v2018/current?city=${city}&app=aare-float-map&version=0.3`, {
-    headers: { 'Accept': 'application/json' }
-  }).then(r => r.json());
+fetch('https://aarebootsvermietung.ch/api/aare-status')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(data => {
+    const t = data.stations.thun.hydro;
+    const b = data.stations.bern.hydro;
 
-Promise.allSettled([aareGuru('thun'), aareGuru('bern')]).then(([thun, bern]) => {
-  const t = thun.status === 'fulfilled' ? (thun.value.aare || {}) : {};
-  const b = bern.status === 'fulfilled' ? (bern.value.aare || {}) : {};
+    if (b.water_temperature != null) setStat('stat-temp', `${b.water_temperature} °C`);
+    if (t.flow != null) setStat('stat-flow-thun', `${t.flow} m³/s`);
+    // City of Bern advises caution for boaters above ~220 m³/s
+    if (b.flow != null) setStat('stat-flow-bern', `${b.flow} m³/s`, b.flow >= 220);
 
-  if (b.temperature != null) setStat('stat-temp', `${b.temperature} °C`);
-  if (t.flow != null) setStat('stat-flow-thun', `${t.flow} m³/s`);
-  // City of Bern advises caution for boaters above ~220 m³/s
-  if (b.flow != null) setStat('stat-flow-bern', `${b.flow} m³/s`, b.flow >= 220);
-
-  const time = floatTime(t.flow != null ? t.flow : b.flow);
-  if (time) setStat('stat-time', time);
-  if (b.flow != null && b.flow >= 220) {
-    toast(fmt(MESSAGES[LANG].highFlow, { flow: b.flow }));
-  }
-}).catch(() => { /* live data is optional; map works without it */ });
+    const time = floatTime(t.flow != null ? t.flow : b.flow);
+    if (time) setStat('stat-time', time);
+    if (b.flow != null && b.flow >= 220) {
+      toast(fmt(MESSAGES[LANG].highFlow, { flow: b.flow }));
+    }
+  })
+  .catch(() => { /* live data is optional; map works without it */ });
 
 // --- Site alert banner (content managed via admin.html → data/site.js) ---
 const siteAlertEl = document.getElementById('site-alert');

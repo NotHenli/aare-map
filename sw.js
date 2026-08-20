@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   // Ignore requests to external APIs that shouldn't be cached (e.g. live temperature data)
-  if (event.request.url.includes('aareguru.existenz.ch')) return;
+  if (event.request.url.includes('aarebootsvermietung.ch/api/')) return;
 
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {

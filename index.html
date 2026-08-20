@@ -6,11 +6,11 @@
   <!-- Everything is served from our own origin (Leaflet is self-hosted); the only
        remote endpoints are swisstopo map tiles and anonymous aare.guru live data.
        Geolocation stays on the device – no origin may receive or store it. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://wmts.geo.admin.ch; connect-src 'self' https://aareguru.existenz.ch; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://wmts.geo.admin.ch; connect-src 'self' https://aarebootsvermietung.ch; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#0b1d2a">
   <link rel="preconnect" href="https://wmts.geo.admin.ch">
-  <link rel="preconnect" href="https://aareguru.existenz.ch" crossorigin>
+  <link rel="preconnect" href="https://aarebootsvermietung.ch" crossorigin>
   <link rel="shortcut icon" href="/favicon.ico">
   <link rel="icon" type="image/png" href="img/favicon.png?v=2">
   <title>Aare Map | Interaktive Karte fürs Aareböötle Thun → Bern</title>
@@ -225,7 +225,7 @@
         <div id="lang-menu" class="hidden" role="listbox" aria-label="Languages"></div>
       </div>
     </div>
-    <div id="stats" title="Live-Daten: aare.guru">
+    <div id="stats" title="Live-Daten: aarebootsvermietung.ch">
       <div class="stat"><b id="stat-temp">–</b><span data-i18n="statTemp">Wasser Bern</span></div>
       <div class="stat"><b id="stat-flow-thun">–</b><span data-i18n="statFlowThun">Abfluss Thun</span></div>
       <div class="stat"><b id="stat-flow-bern">–</b><span data-i18n="statFlowBern">Abfluss Bern</span></div>
