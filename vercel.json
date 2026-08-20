@@ -14,6 +14,7 @@
     { "source": "/en", "destination": "/index.html" },
     { "source": "/vermietung", "destination": "/index.html" },
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/login", "destination": "/login.html" }
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/api/aare/:path*", "destination": "https://aareguru.existenz.ch/:path*" }
   ]
 }

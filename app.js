@@ -826,9 +826,13 @@ function setStat(id, text, warn) {
   if (warn) el.parentElement.classList.add('warn');
 }
 
+const aareBase = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+  ? 'https://aareguru.existenz.ch'
+  : '/api/aare';
 const aareGuru = city =>
-  fetch(`https://aareguru.existenz.ch/v2018/current?city=${city}&app=aare-float-map&version=0.3`)
-    .then(r => r.json());
+  fetch(`${aareBase}/v2018/current?city=${city}&app=aare-float-map&version=0.3`, {
+    headers: { 'Accept': 'application/json' }
+  }).then(r => r.json());
 
 Promise.allSettled([aareGuru('thun'), aareGuru('bern')]).then(([thun, bern]) => {
   const t = thun.status === 'fulfilled' ? (thun.value.aare || {}) : {};
