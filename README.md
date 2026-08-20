@@ -50,7 +50,7 @@ ohne Feld: überall sichtbar). Sicherheitspunkte nie einschränken.
 
 - **Kartenkacheln:** [swisstopo](https://www.swisstopo.admin.ch) – frei nutzbar mit Quellenangabe
 - **Flussgeometrie & POI-Koordinaten:** [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL)
-- **Wassertemperatur/Abfluss:** [Aarebootsvermietung](https://aarebootsvermietung.ch/en/aare-status) API (BAFU-Daten, Quellenangabe erforderlich)
+- **Wassertemperatur/Abfluss:** [Aarebootsvermietung](https://aarebootsvermietung.vercel.app/en/aare-status) API (BAFU-Daten, Quellenangabe erforderlich)
 - Sicherheitsinformationen orientieren sich an der offiziellen SLRG-Aarekarte.
   **Wichtig:** Das Kartenbild/PDF der SLRG ist urheberrechtlich geschützt und
   darf nicht kopiert werden – diese Seite verwendet ausschliesslich eigene

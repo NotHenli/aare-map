@@ -36,7 +36,7 @@ L.tileLayer(
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
   {
     maxZoom: 19,
-    attribution: '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Aare: <a href="https://aarebootsvermietung.ch/en/aare-status" target="_blank" rel="noopener">Aarebootsvermietung</a> · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>'
+    attribution: '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Aare: <a href="https://aarebootsvermietung.vercel.app/en/aare-status" target="_blank" rel="noopener">Aarebootsvermietung</a> · Wetter: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>'
   }
 ).addTo(map);
 
@@ -826,7 +826,7 @@ function setStat(id, text, warn) {
   if (warn) el.parentElement.classList.add('warn');
 }
 
-fetch('https://aarebootsvermietung.ch/api/aare-status')
+fetch('https://aarebootsvermietung.vercel.app/api/aare-status')
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(data => {
     const t = data.stations.thun.hydro;
