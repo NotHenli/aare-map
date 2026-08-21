@@ -247,21 +247,16 @@
     </svg>
   </button>
 
-  <!-- iOS location permission guide (shown when Safari blocks geolocation) -->
+  <!-- Location permission guide (content is filled in per-device/browser by app.js) -->
   <div id="loc-perm-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loc-perm-title">
     <div id="loc-perm-box">
       <div id="loc-perm-icon">
         <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M2.5 12.5 L21.5 3.5 L14.5 21.5 L11.5 13.5 Z"/></svg>
       </div>
       <h2 id="loc-perm-title" data-i18n="permTitle">Standort freigeben</h2>
-      <p data-i18n="permBody">Safari blockiert den Zugriff auf deinen Standort. So aktivierst du ihn:</p>
-      <ol id="loc-perm-steps">
-        <li data-i18n-html="permStep1">Tippe unten auf <strong>Einstellungen öffnen</strong></li>
-        <li data-i18n-html="permStep2">Gehe zu <strong>Einstellungen → Datenschutz &amp; Sicherheit → Ortungsdienste → Safari</strong></li>
-        <li data-i18n-html="permStep3">Wähle <strong>Beim Verwenden der App</strong> oder <strong>Fragen</strong></li>
-        <li data-i18n="permStep4">Komme zurück und tippe erneut auf den Standort-Pfeil</li>
-      </ol>
-      <a id="loc-perm-settings" href="App-prefs:root=LOCATION_SERVICES" data-i18n="permSettings">Einstellungen öffnen ↗</a>
+      <p id="loc-perm-body"></p>
+      <ol id="loc-perm-steps"></ol>
+      <a id="loc-perm-settings" class="hidden"></a>
       <button id="loc-perm-close" data-i18n="permClose">Schliessen</button>
     </div>
   </div>

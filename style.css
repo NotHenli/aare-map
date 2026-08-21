@@ -293,6 +293,7 @@ html, body {
   gap: 10px;
   counter-reset: steps;
 }
+#loc-perm-steps.hidden { display: none; }
 #loc-perm-steps li {
   display: flex;
   align-items: flex-start;
@@ -327,6 +328,7 @@ html, body {
   text-align: center;
   margin-top: 4px;
 }
+#loc-perm-settings.hidden { display: none; }
 #loc-perm-close {
   border: none;
   background: rgba(15, 36, 54, 0.07);

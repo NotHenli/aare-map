@@ -363,7 +363,9 @@ const TRANS_SECTIONS = {
   'Live-Daten': ['statsTitle', 'statTemp', 'statFlowThun', 'statFlowBern', 'statTime'],
   'Fortschritt & Sicherheit': ['progress', 'progressDanger', 'progressMissedExit', 'hazardAhead', 'highFlow'],
   'Standort & Berechtigungen': ['locError', 'locateAria', 'locateHint', 'permTitle', 'permBody',
-    'permStep1', 'permStep2', 'permStep3', 'permStep4', 'permSettings', 'permClose'],
+    'permStepOpenSettingsApp', 'permStep2', 'permStep3', 'permStep4',
+    'permAndroidStep1', 'permAndroidStep2', 'permAndroidStep3', 'permAndroidSettings',
+    'permDesktopBody', 'permClose'],
   'Onboarding': ['introStart', 'introHintPartner', 'website'],
   'Rechtliches & Footer': ['disclaimer'],
   'Sonstiges': ['beerHint']

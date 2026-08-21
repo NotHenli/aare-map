@@ -797,10 +797,73 @@ map.on('locationerror', e => {
   }
 });
 
-// --- Location permission modal (Safari / iOS) ---
+// --- Location permission modal: detects OS/browser and shows matching instructions ---
+function detectPermPlatform() {
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  let browser = 'Safari';
+  let androidPackage = null;
+  if (isIOS) {
+    if (/CriOS/.test(ua)) browser = 'Chrome';
+    else if (/FxiOS/.test(ua)) browser = 'Firefox';
+    else if (/EdgiOS/.test(ua)) browser = 'Edge';
+    else browser = 'Safari';
+  } else if (isAndroid) {
+    if (/SamsungBrowser/.test(ua)) { browser = 'Samsung Internet'; androidPackage = 'com.sec.android.app.sbrowser'; }
+    else if (/EdgA\//.test(ua)) { browser = 'Edge'; androidPackage = 'com.microsoft.emmx'; }
+    else if (/OPR\/|Opera/.test(ua)) { browser = 'Opera'; androidPackage = 'com.opera.browser'; }
+    else if (/Firefox/.test(ua)) { browser = 'Firefox'; androidPackage = 'org.mozilla.firefox'; }
+    else if (/Chrome/.test(ua)) { browser = 'Chrome'; androidPackage = 'com.android.chrome'; }
+  } else {
+    if (/Edg\//.test(ua)) browser = 'Edge';
+    else if (/Firefox/.test(ua)) browser = 'Firefox';
+    else if (/Chrome/.test(ua)) browser = 'Chrome';
+    else if (/Safari/.test(ua)) browser = 'Safari';
+  }
+  return { platform: isIOS ? 'ios' : isAndroid ? 'android' : 'desktop', browser, androidPackage };
+}
+
 const locPermModal = document.getElementById('loc-perm-modal');
 const locPermClose = document.getElementById('loc-perm-close');
-function showPermModal() { locPermModal.classList.remove('hidden'); }
+const locPermBody = document.getElementById('loc-perm-body');
+const locPermSteps = document.getElementById('loc-perm-steps');
+const locPermSettings = document.getElementById('loc-perm-settings');
+
+function renderPermModal() {
+  const { platform, browser, androidPackage } = detectPermPlatform();
+
+  if (platform === 'desktop') {
+    locPermBody.innerHTML = fmt(t('permDesktopBody'), { browser });
+    locPermSteps.classList.add('hidden');
+    locPermSteps.innerHTML = '';
+    locPermSettings.classList.add('hidden');
+  } else if (platform === 'android') {
+    locPermBody.innerHTML = fmt(t('permBody'), { browser });
+    locPermSteps.classList.remove('hidden');
+    locPermSteps.innerHTML = `
+      <li>${t('permAndroidStep1')}</li>
+      <li>${t('permAndroidStep2')}</li>
+      <li>${t('permAndroidStep3')}</li>
+      <li>${t('permStep4')}</li>`;
+    locPermSettings.classList.remove('hidden');
+    locPermSettings.textContent = t('permAndroidSettings');
+    locPermSettings.href = androidPackage
+      ? `intent://#Intent;action=android.settings.APPLICATION_DETAILS_SETTINGS;package=${androidPackage};end`
+      : 'intent://settings#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end';
+  } else {
+    locPermBody.innerHTML = fmt(t('permBody'), { browser });
+    locPermSteps.classList.remove('hidden');
+    locPermSteps.innerHTML = `
+      <li>${t('permStepOpenSettingsApp')}</li>
+      <li>${fmt(t('permStep2'), { browser })}</li>
+      <li>${t('permStep3')}</li>
+      <li>${t('permStep4')}</li>`;
+    locPermSettings.classList.add('hidden');
+  }
+}
+
+function showPermModal() { renderPermModal(); locPermModal.classList.remove('hidden'); }
 function hidePermModal() { locPermModal.classList.add('hidden'); }
 locPermClose.addEventListener('click', hidePermModal);
 locPermModal.addEventListener('click', e => { if (e.target === locPermModal) hidePermModal(); });
@@ -959,8 +1022,8 @@ function applyLang(lang) {
   }
 
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-  // Permission modal steps contain <strong> tags — use innerHTML for those.
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  if (!locPermModal.classList.contains('hidden')) renderPermModal();
   const subEl = document.querySelector('[data-i18n="subtitle"]');
   if (PARTNER && subEl) subEl.textContent = t('subtitlePartner');
   renderSiteAlert();
