@@ -49,14 +49,6 @@ html, body {
 }
 #title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 #title-row h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1.1; }
-#app-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  object-fit: cover;
-  flex-shrink: 0;
-  display: block;
-}
 
 
 /* ---------- Language Dropdown ---------- */
